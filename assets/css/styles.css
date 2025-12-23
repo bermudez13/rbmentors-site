@@ -339,3 +339,13 @@ footer a {
   .faq-grid { grid-template-columns: 1fr; }
 }
 
+.icon {
+  width: 52px;
+  height: 52px;
+  display: inline-block;
+}
+
+.card .icon {
+  margin-bottom: 0.75rem;
+}
+
