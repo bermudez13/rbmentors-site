@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+Disallow: /assets/docs/
+
+Sitemap: https://rbmentors.com/sitemap.xml
