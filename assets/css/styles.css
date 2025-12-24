@@ -886,3 +886,25 @@ html {
   margin-bottom: 0.75rem;
   display: block;
 }
+
+#scrollTopBtn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background-color: #10222e;
+  color: #fff5d1;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  display: none; /* oculto por defecto */
+  z-index: 1000;
+  box-shadow: 0 8px 18px rgba(16, 34, 46, 0.25);
+}
+
+#scrollTopBtn:hover {
+  background-color: #202e3c;
+}
