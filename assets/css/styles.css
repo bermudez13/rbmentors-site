@@ -460,12 +460,6 @@ footer a {
   color: #fff5d1;
 }
 
-.promo-icon {
-  width: 56px;
-  height: 56px;
-  flex: 0 0 auto;
-}
-
 .promo-title {
   margin: 0 0 0.5rem;
   color: #10222e;
@@ -534,17 +528,41 @@ footer a {
     grid-template-columns: 1fr;
   }
 }
+/*---------- RBM: services components (continued) ---------- */
 
-.promo-icon {
-  width: 64px;      /* ajusta 56–72 según te guste */
-  height: auto;
-  flex: 0 0 auto;
+.services { padding: 3.5rem 0; background: #fff; }
+.section-head { text-align: center; max-width: 780px; margin: 0 auto 2rem; }
+.kicker { letter-spacing: 0.12em; font-weight: 700; font-size: 0.85rem; color: #5A738E; }
+.muted { color: #202E3C; opacity: 0.85; }
+.cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+.card { background: #fff; border: 1px solid rgba(90,115,142,0.25); border-radius: 14px; padding: 1.5rem; }
+.card h3 { margin: 0.75rem 0 0.5rem; color: #10222E; }
+.card p { margin: 0; color: #202E3C; opacity: 0.9; }
+.icon { width: 72px; height: 72px; object-fit: contain; display: block; }
+
+@media (max-width: 900px) {
+  .cards-grid { grid-template-columns: 1fr; }
+}
+
+.card {
+  text-align: center;
+}
+
+.card .icon {
+  margin: 0 auto 0.75rem auto;
+}
+
+
+
+/* ---------- Icons (generic) ---------- */
+.icon {
   display: block;
-}
-
-.promo-icon {
+  object-fit: contain;
+  flex: 0 0 auto;
   width: 72px;
-  height: auto;
-  max-height: 72px;
+  height: 72px;
 }
 
+.icon-lg { width: 84px; height: 84px; }
+.icon-sm { width: 56px; height: 56px; }
+.icon-xl { width: 96px; height: 96px; }
