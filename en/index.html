@@ -4,6 +4,19 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Right Business Mentors | Tax Preparation</title>
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/assets/img/favicon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/assets/img/favicon.png"
+    />
+
     <meta
       name="description"
       content="Tax preparation with a clear process, personalized attention, and compliance-first approach."
@@ -42,6 +55,7 @@
         </nav>
       </div>
     </header>
+
     <main>
       <section class="hero" id="hero">
         <div class="container hero-grid">
@@ -58,7 +72,7 @@
             </p>
 
             <div class="hero-actions">
-              <a href="/en/#contact/" class="btn btn-primary"
+              <a href="/en/#contact" class="btn btn-primary"
                 >Get a Free Quote</a
               >
             </div>
@@ -95,7 +109,7 @@
                 I’ll reply with a clear estimate and next steps.
               </p>
               <div class="promo-actions">
-                <a class="btn btn-primary" href="/en/#contact/"
+                <a class="btn btn-primary" href="/en/#contact"
                   >Request a Free Quote</a
                 >
                 <a
@@ -126,7 +140,7 @@
                 <strong>$100</strong>. Ask for details and eligibility.
               </p>
               <div class="promo-actions">
-                <a class="btn btn-secondary" href="/en/#contact/"
+                <a class="btn btn-secondary" href="/en/#contact"
                   >Ask about the referral offer</a
                 >
               </div>
@@ -298,7 +312,7 @@
             <p class="muted">
               Request a free quote and I’ll reply with next steps.
             </p>
-            <a class="btn btn-primary" href="/en/#contact/"
+            <a class="btn btn-primary" href="/en/#contact"
               >Request a Free Quote</a
             >
           </div>
@@ -342,7 +356,7 @@
 
           <div class="about-visual">
             <img
-              src="/assets/img/icons/trusted-guidance-dark.png"
+              src="/assets/img/logo1.png"
               alt="Trusted tax guidance"
               loading="lazy"
             />
@@ -418,7 +432,7 @@
           </div>
 
           <div class="faq-cta">
-            <a class="btn btn-primary" href="/en/#contact/"
+            <a class="btn btn-primary" href="/en/#contact"
               >Request a Free Quote</a
             >
           </div>
@@ -457,17 +471,29 @@
 
             <div class="form-group">
               <label for="name">Name *</label>
-              <input id="name" name="name" type="text" required />
+              <input
+                id="name"
+                name="name"
+                type="text"
+                required
+                maxlength="80"
+              />
             </div>
 
             <div class="form-group">
               <label for="email">Email *</label>
-              <input id="email" name="email" type="email" required />
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                maxlength="120"
+              />
             </div>
 
             <div class="form-group">
               <label for="phone">Phone (optional)</label>
-              <input id="phone" name="phone" type="tel" />
+              <input id="phone" name="phone" type="tel" maxlength="30" />
             </div>
 
             <div class="form-group">
@@ -481,7 +507,12 @@
 
             <div class="form-group">
               <label for="message">Message (optional)</label>
-              <textarea id="message" name="message" rows="4"></textarea>
+              <textarea
+                id="message"
+                name="message"
+                rows="4"
+                maxlength="1200"
+              ></textarea>
             </div>
 
             <button type="submit" class="btn btn-primary">Send request</button>
@@ -497,7 +528,7 @@
       <footer class="site-footer" id="footer">
         <div class="container footer-grid">
           <div class="footer-col">
-            <a class="footer-brand" href="/en/">Right Business Mentors</a>
+            <a class="footer-brand" href="/en/">Right Business Mentors </a>
             <p class="footer-tagline">Your Pathway to Financial Peace</p>
             <p class="footer-text">
               Tax preparation and guidance focused on accuracy, compliance, and

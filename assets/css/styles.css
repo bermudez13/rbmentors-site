@@ -873,3 +873,16 @@ html {
     grid-template-columns: 1fr;
   }
 }
+
+.site-logo img {
+  height: 92px;
+  width: auto;
+  display: block;
+}
+
+.footer-logo {
+  height: 86px;
+  width: auto;
+  margin-bottom: 0.75rem;
+  display: block;
+}
