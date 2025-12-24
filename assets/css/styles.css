@@ -349,3 +349,202 @@ footer a {
   margin-bottom: 0.75rem;
 }
 
+/* =====================
+   HERO SECTION
+===================== */
+
+.hero {
+  background-color: #F9FAFB;
+  padding: 4rem 0;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: center;
+  gap: 3rem;
+}
+
+.hero-content h1 {
+  font-size: 3rem;
+  line-height: 1.15;
+  color: #10222E;
+  margin-bottom: 1.25rem;
+}
+
+.hero-subtitle {
+  font-size: 1.125rem;
+  color: #202E3C;
+  max-width: 520px;
+  margin-bottom: 2rem;
+}
+
+.hero-actions {
+  margin-bottom: 1rem;
+}
+
+.hero-trust {
+  font-size: 0.9rem;
+  color: #5A738E;
+}
+
+.hero-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 14px;
+  box-shadow: 0 18px 40px rgba(16, 34, 46, 0.15);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .hero-content h1 {
+    font-size: 2.4rem;
+  }
+
+  .hero-image {
+    order: -1;
+  }
+}
+
+
+.btn {
+  display: inline-block;
+  padding: 0.9rem 1.6rem;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background-color: #10222E;
+  color: #FFF5D1;
+}
+
+.btn-primary:hover {
+  background-color: #202E3C;
+}
+
+/* =====================
+   PROMO (FREE QUOTE + REFERRAL)
+===================== */
+
+.promo {
+  padding: 3rem 0;
+  background: #fff;
+}
+
+.promo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.promo-card {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  background: #fff5d1;
+  border: 1px solid rgba(90,115,142,0.35);
+  border-radius: 14px;
+  padding: 1.5rem;
+}
+
+.promo-card-strong {
+  background: #10222e;
+  border-color: rgba(255,245,209,0.25);
+  color: #fff5d1;
+}
+
+.promo-icon {
+  width: 56px;
+  height: 56px;
+  flex: 0 0 auto;
+}
+
+.promo-title {
+  margin: 0 0 0.5rem;
+  color: #10222e;
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+.promo-card-strong .promo-title {
+  color: #fff5d1;
+}
+
+.promo-text {
+  margin: 0 0 1rem;
+  color: #202e3c;
+}
+
+.promo-card-strong .promo-text {
+  color: rgba(255,245,209,0.92);
+}
+
+.promo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.promo-badge {
+  display: inline-block;
+  background: #fff5d1;
+  color: #10222e;
+  border-radius: 999px;
+  padding: 0.25rem 0.6rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.promo-fineprint {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+/* Secondary button (if you don't have it yet) */
+.btn-secondary {
+  background: transparent;
+  color: #10222e;
+  border: 1px solid rgba(16,34,46,0.35);
+}
+
+.btn-secondary:hover {
+  background: rgba(16,34,46,0.06);
+}
+
+.promo-card-strong .btn-secondary {
+  color: #fff5d1;
+  border-color: rgba(255,245,209,0.5);
+}
+
+.promo-card-strong .btn-secondary:hover {
+  background: rgba(255,245,209,0.12);
+}
+
+@media (max-width: 900px) {
+  .promo-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.promo-icon {
+  width: 64px;      /* ajusta 56–72 según te guste */
+  height: auto;
+  flex: 0 0 auto;
+  display: block;
+}
+
+.promo-icon {
+  width: 72px;
+  height: auto;
+  max-height: 72px;
+}
+
