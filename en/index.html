@@ -22,12 +22,17 @@
       content="Tax preparation with a clear process, personalized attention, and compliance-first approach."
     />
     <link rel="stylesheet" href="/assets/css/styles.css" />
-  </head>
 
+    <script
+      src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+      async
+      defer
+    ></script>
+  </head>
   <script src="/assets/js/main.js" defer></script>
-  <button id="scrollTopBtn" aria-label="Back to top">↑</button>
 
   <body>
+    <button id="scrollTopBtn" aria-label="Back to top">↑</button>
     <div class="topbar">
       <div class="container bar-inner">
         <div>
@@ -517,8 +522,15 @@
                 maxlength="1200"
               ></textarea>
             </div>
+            <div class="form-group">
+              <div
+                class="cf-turnstile"
+                data-sitekey="__TURNSTILE_SITE_KEY__"
+              ></div>
+            </div>
 
             <button type="submit" class="btn btn-primary">Send request</button>
+            <div class="form-status" role="status" aria-live="polite"></div>
 
             <p class="form-fine">
               Your information is kept private and used only to respond to your

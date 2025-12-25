@@ -1,0 +1,186 @@
+function json(body, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      "Cache-Control": "no-store",
+    },
+  });
+}
+
+function isValidEmail(email) {
+  // Simple, practical check (not RFC-perfect by design)
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+}
+
+function clip(s, max) {
+  s = (s || "").toString().trim();
+  return s.length > max ? s.slice(0, max) : s;
+}
+
+async function verifyTurnstile({ secret, token, ip }) {
+  const form = new URLSearchParams();
+  form.set("secret", secret);
+  form.set("response", token);
+  if (ip) form.set("remoteip", ip);
+
+  const resp = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+    method: "POST",
+    body: form,
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+  });
+
+  return resp.json();
+}
+
+async function sendMailViaMailChannels({ from, to, subject, text, replyTo }) {
+  const payload = {
+    personalizations: [{ to: [{ email: to }] }],
+    from: { email: from },
+    subject,
+    content: [{ type: "text/plain", value: text }],
+  };
+
+  if (replyTo) {
+    payload.reply_to = { email: replyTo };
+  }
+
+  const resp = await fetch("https://api.mailchannels.net/tx/v1/send", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  return resp;
+}
+
+export async function onRequestPost(context) {
+  const { request, env } = context;
+
+  // Required env vars
+  const TURNSTILE_SECRET = env.TURNSTILE_SECRET;
+  const CONTACT_TO = env.CONTACT_TO;
+  const CONTACT_FROM = env.CONTACT_FROM;
+
+  if (!TURNSTILE_SECRET || !CONTACT_TO || !CONTACT_FROM) {
+    return json(
+      { ok: false, error: "Server is not configured.", code: "CONFIG_MISSING" },
+      500
+    );
+  }
+
+  let form;
+  try {
+    form = await request.formData();
+  } catch {
+    return json({ ok: false, error: "Invalid request.", code: "BAD_REQUEST" }, 400);
+  }
+
+  // Honeypot
+  const hp = clip(form.get("company"), 200);
+  if (hp) {
+    // pretend success to avoid giving signal to bots
+    return json({ ok: true });
+  }
+
+  const name = clip(form.get("name"), 80);
+  const email = clip(form.get("email"), 120);
+  const phone = clip(form.get("phone"), 30);
+  const language = clip(form.get("language"), 30);
+  const message = clip(form.get("message"), 1200);
+
+  if (!name || !email) {
+    return json(
+      { ok: false, error: "Name and email are required.", code: "VALIDATION" },
+      400
+    );
+  }
+
+  if (!isValidEmail(email)) {
+    return json(
+      { ok: false, error: "Please enter a valid email.", code: "VALIDATION" },
+      400
+    );
+  }
+
+  // Turnstile token name is fixed by Cloudflare widget
+  const token = clip(form.get("cf-turnstile-response"), 2000);
+  if (!token) {
+    return json(
+      { ok: false, error: "Turnstile required.", code: "TURNSTILE_REQUIRED" },
+      400
+    );
+  }
+
+  // Client IP (best-effort)
+  const ip =
+    request.headers.get("CF-Connecting-IP") ||
+    request.headers.get("X-Forwarded-For")?.split(",")[0]?.trim() ||
+    "";
+
+  let ts;
+  try {
+    ts = await verifyTurnstile({ secret: TURNSTILE_SECRET, token, ip });
+  } catch {
+    return json(
+      { ok: false, error: "Captcha verification failed.", code: "TURNSTILE_FAILED" },
+      400
+    );
+  }
+
+  if (!ts.success) {
+    return json(
+      { ok: false, error: "Captcha verification failed.", code: "TURNSTILE_FAILED" },
+      400
+    );
+  }
+
+  // Build email content
+  const subjectPrefix = env.CONTACT_SUBJECT_PREFIX || "RBM - New Quote Request";
+  const subject = `${subjectPrefix} (${language || "n/a"})`;
+
+  const textLines = [
+    "New website contact request",
+    "--------------------------",
+    `Name: ${name}`,
+    `Email: ${email}`,
+    `Phone: ${phone || "n/a"}`,
+    `Preferred language: ${language || "n/a"}`,
+    "",
+    "Message:",
+    message || "n/a",
+    "",
+    `IP: ${ip || "n/a"}`,
+    `Turnstile: ok`,
+  ];
+
+  // Send email
+  try {
+    const mailResp = await sendMailViaMailChannels({
+      from: CONTACT_FROM,
+      to: CONTACT_TO,
+      subject,
+      text: textLines.join("\n"),
+      replyTo: email, // reply goes to user
+    });
+
+    if (!mailResp.ok) {
+      return json(
+        { ok: false, error: "Email delivery failed.", code: "EMAIL_FAILED" },
+        502
+      );
+    }
+  } catch {
+    return json(
+      { ok: false, error: "Email delivery failed.", code: "EMAIL_FAILED" },
+      502
+    );
+  }
+
+  return json({ ok: true });
+}
+
+export async function onRequest(context) {
+  if (context.request.method === "POST") return onRequestPost(context);
+  return json({ ok: false, error: "Method not allowed." }, 405);
+}

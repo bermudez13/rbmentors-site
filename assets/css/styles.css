@@ -865,7 +865,12 @@ html {
 
 /* Honeypot hidden */
 .hp-field {
-  display: none !important;
+  position: absolute !important;
+  left: -9999px !important;
+  top: auto !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
 }
 
 @media (max-width: 900px) {
@@ -907,4 +912,38 @@ html {
 
 #scrollTopBtn:hover {
   background-color: #202e3c;
+}
+
+.form-status {
+  margin: 0.75rem 0 1rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  line-height: 1.35;
+  border: 1px solid rgba(90, 115, 142, 0.25);
+  background: rgba(255, 245, 209, 0.55);
+  color: #202e3c;
+}
+
+.form-status:empty {
+  display: none;
+}
+
+.form-status.is-success {
+  border-color: rgba(16, 34, 46, 0.35);
+  background: rgba(202, 210, 211, 0.55);
+}
+
+.form-status.is-error {
+  border-color: rgba(90, 115, 142, 0.55);
+  background: rgba(255, 245, 209, 0.75);
+}
+
+.contact-form .cf-turnstile {
+  margin: 0.25rem 0 0.75rem;
+}
+
+.btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
