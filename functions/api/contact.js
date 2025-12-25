@@ -164,7 +164,27 @@ export async function onRequestPost(context) {
       replyTo: email, // reply goes to user
     });
 
+    //eliminar start
     if (!mailResp.ok) {
+  const details = await mailResp.text().catch(() => "");
+  console.log("MailChannels failed:", mailResp.status, details);
+  return json(
+    { ok: false, error: "Email delivery failed.", code: "EMAIL_FAILED" },
+    502
+  );
+}
+} catch (err) {
+  console.log("MailChannels exception:", err);
+  return json(
+    { ok: false, error: "Email delivery failed.", code: "EMAIL_FAILED" },
+    502
+  );
+}
+
+
+    //eliminar fin
+
+    /*if (!mailResp.ok) {
       return json(
         { ok: false, error: "Email delivery failed.", code: "EMAIL_FAILED" },
         502
@@ -175,7 +195,7 @@ export async function onRequestPost(context) {
       { ok: false, error: "Email delivery failed.", code: "EMAIL_FAILED" },
       502
     );
-  }
+  }*/
 
   return json({ ok: true });
 }
