@@ -9,7 +9,6 @@ function json(body, status = 200) {
 }
 
 function isValidEmail(email) {
-  // Simple, practical check (not RFC-perfect by design)
   return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
 }
 
@@ -33,21 +32,21 @@ async function verifyTurnstile({ secret, token, ip }) {
   return resp.json();
 }
 
-async function sendMailViaMailChannels({ from, to, subject, text, replyTo }) {
+async function sendWithResend({ apiKey, from, to, subject, text, replyTo }) {
   const payload = {
-    personalizations: [{ to: [{ email: to }] }],
-    from: { email: from },
+    from,
+    to: [to],
     subject,
-    content: [{ type: "text/plain", value: text }],
+    text,
+    ...(replyTo ? { reply_to: replyTo } : {}),
   };
 
-  if (replyTo) {
-    payload.reply_to = { email: replyTo };
-  }
-
-  const resp = await fetch("https://api.mailchannels.net/tx/v1/send", {
+  const resp = await fetch("https://api.resend.com/emails", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(payload),
   });
 
@@ -57,16 +56,17 @@ async function sendMailViaMailChannels({ from, to, subject, text, replyTo }) {
 export async function onRequestPost(context) {
   const { request, env } = context;
 
-  // Required env vars
   const TURNSTILE_SECRET = env.TURNSTILE_SECRET;
   const CONTACT_TO = env.CONTACT_TO;
-  const CONTACT_FROM = env.CONTACT_FROM;
+  const RESEND_API_KEY = env.RESEND_API_KEY;
 
-  if (!TURNSTILE_SECRET || !CONTACT_TO || !CONTACT_FROM) {
-    return json(
-      { ok: false, error: "Server is not configured.", code: "CONFIG_MISSING" },
-      500
-    );
+  // If you haven't verified your domain in Resend yet, keep the default:
+  // "onboarding@resend.dev" (works for testing).
+  // Later you can set RESEND_FROM="no-reply@rbmentors.com" after domain verification.
+  const RESEND_FROM = env.RESEND_FROM || "onboarding@resend.dev";
+
+  if (!TURNSTILE_SECRET || !CONTACT_TO || !RESEND_API_KEY) {
+    return json({ ok: false, error: "Server is not configured.", code: "CONFIG_MISSING" }, 500);
   }
 
   let form;
@@ -78,10 +78,7 @@ export async function onRequestPost(context) {
 
   // Honeypot
   const hp = clip(form.get("company"), 200);
-  if (hp) {
-    // pretend success to avoid giving signal to bots
-    return json({ ok: true });
-  }
+  if (hp) return json({ ok: true });
 
   const name = clip(form.get("name"), 80);
   const email = clip(form.get("email"), 120);
@@ -90,29 +87,17 @@ export async function onRequestPost(context) {
   const message = clip(form.get("message"), 1200);
 
   if (!name || !email) {
-    return json(
-      { ok: false, error: "Name and email are required.", code: "VALIDATION" },
-      400
-    );
+    return json({ ok: false, error: "Name and email are required.", code: "VALIDATION" }, 400);
   }
-
   if (!isValidEmail(email)) {
-    return json(
-      { ok: false, error: "Please enter a valid email.", code: "VALIDATION" },
-      400
-    );
+    return json({ ok: false, error: "Please enter a valid email.", code: "VALIDATION" }, 400);
   }
 
-  // Turnstile token name is fixed by Cloudflare widget
   const token = clip(form.get("cf-turnstile-response"), 2000);
   if (!token) {
-    return json(
-      { ok: false, error: "Turnstile required.", code: "TURNSTILE_REQUIRED" },
-      400
-    );
+    return json({ ok: false, error: "Turnstile required.", code: "TURNSTILE_REQUIRED" }, 400);
   }
 
-  // Client IP (best-effort)
   const ip =
     request.headers.get("CF-Connecting-IP") ||
     request.headers.get("X-Forwarded-For")?.split(",")[0]?.trim() ||
@@ -122,20 +107,13 @@ export async function onRequestPost(context) {
   try {
     ts = await verifyTurnstile({ secret: TURNSTILE_SECRET, token, ip });
   } catch {
-    return json(
-      { ok: false, error: "Captcha verification failed.", code: "TURNSTILE_FAILED" },
-      400
-    );
+    return json({ ok: false, error: "Captcha verification failed.", code: "TURNSTILE_FAILED" }, 400);
   }
 
   if (!ts.success) {
-    return json(
-      { ok: false, error: "Captcha verification failed.", code: "TURNSTILE_FAILED" },
-      400
-    );
+    return json({ ok: false, error: "Captcha verification failed.", code: "TURNSTILE_FAILED" }, 400);
   }
 
-  // Build email content
   const subjectPrefix = env.CONTACT_SUBJECT_PREFIX || "RBM - New Quote Request";
   const subject = `${subjectPrefix} (${language || "n/a"})`;
 
@@ -151,51 +129,28 @@ export async function onRequestPost(context) {
     message || "n/a",
     "",
     `IP: ${ip || "n/a"}`,
-    `Turnstile: ok`,
+    "Turnstile: ok",
   ];
 
-  // Send email
   try {
-    const mailResp = await sendMailViaMailChannels({
-      from: CONTACT_FROM,
+    const resp = await sendWithResend({
+      apiKey: RESEND_API_KEY,
+      from: RESEND_FROM,
       to: CONTACT_TO,
       subject,
       text: textLines.join("\n"),
-      replyTo: email, // reply goes to user
+      replyTo: email,
     });
 
-    //eliminar start
-    if (!mailResp.ok) {
-  const details = await mailResp.text().catch(() => "");
-  console.log("MailChannels failed:", mailResp.status, details);
-  return json(
-    { ok: false, error: "Email delivery failed.", code: "EMAIL_FAILED" },
-    502
-  );
-}
-} catch (err) {
-  console.log("MailChannels exception:", err);
-  return json(
-    { ok: false, error: "Email delivery failed.", code: "EMAIL_FAILED" },
-    502
-  );
-}
-
-
-    //eliminar fin
-
-    /*if (!mailResp.ok) {
-      return json(
-        { ok: false, error: "Email delivery failed.", code: "EMAIL_FAILED" },
-        502
-      );
+    if (!resp.ok) {
+      const details = await resp.text().catch(() => "");
+      console.log("Resend failed:", resp.status, details);
+      return json({ ok: false, error: "Email delivery failed.", code: "EMAIL_FAILED" }, 502);
     }
-  } catch {
-    return json(
-      { ok: false, error: "Email delivery failed.", code: "EMAIL_FAILED" },
-      502
-    );
-  }*/
+  } catch (err) {
+    console.log("Resend exception:", err);
+    return json({ ok: false, error: "Email delivery failed.", code: "EMAIL_FAILED" }, 502);
+  }
 
   return json({ ok: true });
 }
