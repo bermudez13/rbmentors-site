@@ -1,4 +1,5 @@
 // /functions/api/contact.js
+// Rate limit: 5 submissions per hour per IP (KV binding: RATE_LIMIT_KV)
 
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -17,11 +18,14 @@ export async function onRequestPost(context) {
       return new Response(null, { status: 204, headers: corsHeaders });
     }
 
-    const TURNSTILE_SECRET = env.TURNSTILE_SECRET;
-    const RESEND_API_KEY = env.RESEND_API_KEY;
-    const RESEND_FROM = env.RESEND_FROM;
-    const CONTACT_TO = env.CONTACT_TO;
-    const CONTACT_SUBJECT_PREFIX = env.CONTACT_SUBJECT_PREFIX || "[RBMentors]";
+    const {
+      TURNSTILE_SECRET,
+      RESEND_API_KEY,
+      RESEND_FROM,
+      CONTACT_TO,
+      CONTACT_SUBJECT_PREFIX = "[RBMentors]",
+      RATE_LIMIT_KV, // KV binding name must match
+    } = env;
 
     log("Env present?", {
       TURNSTILE_SECRET: !!TURNSTILE_SECRET,
@@ -29,6 +33,7 @@ export async function onRequestPost(context) {
       RESEND_FROM: RESEND_FROM ? "(set)" : "(missing)",
       CONTACT_TO: CONTACT_TO ? "(set)" : "(missing)",
       CONTACT_SUBJECT_PREFIX,
+      RATE_LIMIT_KV: !!RATE_LIMIT_KV,
     });
 
     if (!TURNSTILE_SECRET || !RESEND_API_KEY || !RESEND_FROM || !CONTACT_TO) {
@@ -38,6 +43,56 @@ export async function onRequestPost(context) {
         corsHeaders
       );
     }
+
+    if (!RATE_LIMIT_KV) {
+      return json(
+        {
+          ok: false,
+          error: "Server misconfiguration: missing KV binding RATE_LIMIT_KV.",
+          reqId,
+        },
+        500,
+        corsHeaders
+      );
+    }
+
+    // ---- Rate limit (5 per hour per IP) ----
+    const ip =
+      request.headers.get("CF-Connecting-IP") ||
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      "unknown";
+
+    const WINDOW_SECONDS = 60 * 60; // 1 hour
+    const MAX_REQUESTS = 5;
+
+    // versioned key to allow future changes without conflicts
+    const rlKey = `rl:v1:contact:${ip}`;
+
+    const current = await RATE_LIMIT_KV.get(rlKey, "json").catch(() => null);
+    const count = Number(current?.count || 0);
+
+    if (count >= MAX_REQUESTS) {
+      log("Rate limit exceeded", { ip, count, windowSec: WINDOW_SECONDS });
+      return json(
+        {
+          ok: false,
+          error: "Too many requests. Please try again later.",
+          code: "RATE_LIMIT",
+          reqId,
+        },
+        429,
+        corsHeaders
+      );
+    }
+
+    await RATE_LIMIT_KV.put(
+      rlKey,
+      JSON.stringify({
+        count: count + 1,
+        firstAt: current?.firstAt || Date.now(),
+      }),
+      { expirationTtl: WINDOW_SECONDS }
+    );
 
     // ---- Parse body (JSON, urlencoded, multipart) ----
     const contentType = request.headers.get("content-type") || "";
@@ -88,25 +143,25 @@ export async function onRequestPost(context) {
       messageLen: message.length,
       hasTurnstileToken: !!turnstileToken,
       honeypotFilled: honeypot.length > 0,
-      ip: request.headers.get("CF-Connecting-IP") || null,
+      ip,
     });
 
     // Require minimal fields (message is optional)
     if (!name || !email || !turnstileToken) {
       return json(
-        { ok: false, error: "Missing required fields (name, email, captcha).", reqId },
+        {
+          ok: false,
+          error: "Missing required fields (name, email, captcha).",
+          reqId,
+        },
         400,
         corsHeaders
       );
     }
 
-    // Basic email sanity check (not RFC-perfect; good enough to cut obvious junk)
+    // Basic email sanity check
     if (!isValidEmail(email)) {
-      return json(
-        { ok: false, error: "Invalid email address.", reqId },
-        400,
-        corsHeaders
-      );
+      return json({ ok: false, error: "Invalid email address.", reqId }, 400, corsHeaders);
     }
 
     // If honeypot filled: silently accept but do not send email
@@ -116,11 +171,10 @@ export async function onRequestPost(context) {
     }
 
     // ---- Turnstile verify ----
-    const ip = request.headers.get("CF-Connecting-IP") || "";
     const tsForm = new FormData();
     tsForm.append("secret", TURNSTILE_SECRET);
     tsForm.append("response", turnstileToken);
-    if (ip) tsForm.append("remoteip", ip);
+    if (ip && ip !== "unknown") tsForm.append("remoteip", ip);
 
     const tsResp = await fetch(
       "https://challenges.cloudflare.com/turnstile/v0/siteverify",
@@ -215,18 +269,10 @@ export async function onRequestPost(context) {
       );
     }
 
-    return json(
-      { ok: true, message: "Email sent.", resend: resendJson, reqId },
-      200,
-      corsHeaders
-    );
+    return json({ ok: true, message: "Email sent.", resend: resendJson, reqId }, 200, corsHeaders);
   } catch (err) {
-    console.error(`[contact ${reqId}] unhandled error`, err);
-    return json(
-      { ok: false, error: "Unhandled server error.", reqId },
-      500,
-      corsHeaders
-    );
+    console.error(`[contact] fatal`, err);
+    return json({ ok: false, error: "Unhandled server error.", reqId }, 500, corsHeaders);
   }
 }
 
@@ -238,7 +284,7 @@ function json(data, status = 200, headers = {}) {
 }
 
 function escapeHtml(str) {
-  return String(str)
+  return String(str || "")
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
@@ -252,7 +298,8 @@ function clamp(value, maxLen) {
 }
 
 function isValidEmail(email) {
-  if (!email) return false;
-  if (email.length > 254) return false;
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const v = String(email || "").trim();
+  if (!v) return false;
+  if (v.length > 254) return false;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 }

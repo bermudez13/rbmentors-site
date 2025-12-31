@@ -42,13 +42,18 @@ if (contactForm) {
     timeout: isSpanish
       ? "La solicitud tardó demasiado. Intenta de nuevo."
       : "Request timed out. Please try again.",
+    rateLimit: isSpanish
+      ? "Demasiados intentos. Espera una hora e inténtalo de nuevo."
+      : "Too many attempts. Please wait an hour and try again.",
     turnstile: isSpanish
       ? "Verifica el captcha y vuelve a intentar."
       : "Please complete the captcha and try again.",
     invalid: isSpanish
       ? "Revisa los campos requeridos (nombre y email)."
       : "Please check required fields (name and email).",
-    invalidEmail: isSpanish ? "El email no parece válido." : "Email doesn't look valid.",
+    invalidEmail: isSpanish
+      ? "El email no parece válido."
+      : "Email doesn't look valid.",
   };
 
   function setStatus(message, kind) {
@@ -74,7 +79,6 @@ if (contactForm) {
   }
 
   function resetTurnstileIfPresent() {
-    // Turnstile injects a hidden input and exposes window.turnstile.reset()
     if (window.turnstile && typeof window.turnstile.reset === "function") {
       try {
         window.turnstile.reset();
@@ -106,10 +110,11 @@ if (contactForm) {
       return;
     }
 
-    // If user didn't complete the captcha yet, fail fast (better UX)
+    // Fast-fail if Turnstile not completed (hidden input added by Turnstile)
     const ts =
-      contactForm.querySelector('input[name="cf-turnstile-response"]')?.value?.trim() ||
-      "";
+      contactForm
+        .querySelector('input[name="cf-turnstile-response"]')
+        ?.value?.trim() || "";
     if (!ts) {
       setStatus(text.turnstile, "error");
       return;
@@ -143,21 +148,29 @@ if (contactForm) {
         setStatus(text.sent, "success");
         contactForm.reset();
         resetTurnstileIfPresent();
-      } else {
-        // Turnstile: supports backend "code", 403, or message
-        const isTurnstile =
-          data?.code === "TURNSTILE_REQUIRED" ||
-          data?.code === "TURNSTILE_FAILED" ||
-          res.status === 403 ||
-          (typeof data?.error === "string" &&
-            data.error.toLowerCase().includes("turnstile"));
-
-        if (isTurnstile) {
-          setStatus(text.turnstile, "error");
-        } else {
-          setStatus(data?.error || text.error, "error");
-        }
+        return;
       }
+
+      // Specific handling by status/code
+      if (res.status === 429 || data?.code === "RATE_LIMIT") {
+        setStatus(text.rateLimit, "error");
+        return;
+      }
+
+      const isTurnstile =
+        data?.code === "TURNSTILE_REQUIRED" ||
+        data?.code === "TURNSTILE_FAILED" ||
+        res.status === 403 ||
+        (typeof data?.error === "string" &&
+          data.error.toLowerCase().includes("turnstile"));
+
+      if (isTurnstile) {
+        setStatus(text.turnstile, "error");
+        return;
+      }
+
+      // Fallback error (prefer server message if present)
+      setStatus(data?.error || text.error, "error");
     } catch (err) {
       if (err && err.name === "AbortError") {
         setStatus(text.timeout, "error");
