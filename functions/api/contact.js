@@ -6,7 +6,6 @@ export async function onRequestPost(context) {
   const reqId = crypto.randomUUID();
   const log = (...args) => console.log(`[contact ${reqId}]`, ...args);
 
-  // CORS (si tu frontend y backend están en el mismo dominio, igual no molesta)
   const corsHeaders = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
@@ -14,12 +13,10 @@ export async function onRequestPost(context) {
   };
 
   try {
-    // Handle preflight
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: corsHeaders });
     }
 
-    // ---- Env vars (Pages Functions => env.*) ----
     const TURNSTILE_SECRET = env.TURNSTILE_SECRET;
     const RESEND_API_KEY = env.RESEND_API_KEY;
     const RESEND_FROM = env.RESEND_FROM;
@@ -36,23 +33,28 @@ export async function onRequestPost(context) {
 
     if (!TURNSTILE_SECRET || !RESEND_API_KEY || !RESEND_FROM || !CONTACT_TO) {
       return json(
-        { ok: false, error: "Server misconfiguration: missing env vars." },
+        { ok: false, error: "Server misconfiguration: missing env vars.", reqId },
         500,
         corsHeaders
       );
     }
 
-    // ---- Parse body ----
-    let body;
+    // ---- Parse body (JSON, urlencoded, multipart) ----
     const contentType = request.headers.get("content-type") || "";
+    let body = {};
+
     if (contentType.includes("application/json")) {
       body = await request.json();
     } else if (contentType.includes("application/x-www-form-urlencoded")) {
       const form = await request.formData();
       body = Object.fromEntries(form.entries());
+    } else if (contentType.includes("multipart/form-data")) {
+      const form = await request.formData();
+      body = Object.fromEntries(form.entries());
     } else {
+      log("Unsupported content-type:", contentType);
       return json(
-        { ok: false, error: "Unsupported content-type." },
+        { ok: false, error: "Unsupported content-type.", contentType, reqId },
         415,
         corsHeaders
       );
@@ -76,13 +78,13 @@ export async function onRequestPost(context) {
 
     if (!name || !email || !message || !turnstileToken) {
       return json(
-        { ok: false, error: "Missing required fields." },
+        { ok: false, error: "Missing required fields.", reqId },
         400,
         corsHeaders
       );
     }
 
-    // ---- Turnstile verify (server-side) ----
+    // ---- Turnstile verify ----
     const ip = request.headers.get("CF-Connecting-IP") || "";
     const tsForm = new FormData();
     tsForm.append("secret", TURNSTILE_SECRET);
@@ -99,15 +101,13 @@ export async function onRequestPost(context) {
 
     if (!tsResp.ok || !tsJson?.success) {
       return json(
-        { ok: false, error: "Turnstile verification failed.", details: tsJson },
+        { ok: false, error: "Turnstile verification failed.", details: tsJson, reqId },
         403,
         corsHeaders
       );
     }
 
-    // ---- Send via Resend ----
-    // Resend suele aceptar "Name <email@domain>"
-    // Recomendado: RESEND_FROM = "Right Business Mentors <no-reply@rbmentors.com>"
+    // ---- Resend ----
     const subject = `${CONTACT_SUBJECT_PREFIX} Contact form submission`;
 
     const html = `
@@ -127,7 +127,6 @@ export async function onRequestPost(context) {
       to: CONTACT_TO.split(",").map((s) => s.trim()).filter(Boolean),
       subject,
       html,
-      // Para que puedas responder directo al cliente
       reply_to: email,
     };
 
@@ -151,9 +150,7 @@ export async function onRequestPost(context) {
     let resendJson = null;
     try {
       resendJson = JSON.parse(resendText);
-    } catch (_) {
-      // keep text
-    }
+    } catch (_) {}
 
     log("Resend response", {
       status: resendResp.status,
@@ -176,19 +173,14 @@ export async function onRequestPost(context) {
     }
 
     return json(
-      {
-        ok: true,
-        message: "Email sent.",
-        resend: resendJson,
-        reqId,
-      },
+      { ok: true, message: "Email sent.", resend: resendJson, reqId },
       200,
       corsHeaders
     );
   } catch (err) {
     console.error(`[contact] unhandled error`, err);
     return json(
-      { ok: false, error: "Unhandled server error." },
+      { ok: false, error: "Unhandled server error.", reqId: crypto.randomUUID() },
       500,
       corsHeaders
     );
@@ -202,7 +194,6 @@ function json(data, status = 200, headers = {}) {
   });
 }
 
-// Simple HTML escaping
 function escapeHtml(str) {
   return String(str)
     .replaceAll("&", "&amp;")

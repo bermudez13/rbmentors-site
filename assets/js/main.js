@@ -68,32 +68,38 @@ if (contactForm) {
       const res = await fetch(contactForm.action || "/api/contact", {
         method: "POST",
         body: formData,
-        headers: {
-          "Accept": "application/json",
-        },
+        headers: { Accept: "application/json" },
       });
 
-      const data = await res.json().catch(() => ({}));
+      const raw = await res.text();
+      let data = {};
+      try { data = raw ? JSON.parse(raw) : {}; } catch {}
 
       if (res.ok && data && data.ok) {
         setStatus(text.sent, "success");
         contactForm.reset();
-        // Reset Turnstile (if present)
         if (window.turnstile && typeof window.turnstile.reset === "function") {
           window.turnstile.reset();
         }
       } else {
-        const code = data?.code;
-        if (code === "TURNSTILE_REQUIRED" || code === "TURNSTILE_FAILED") {
+        // Turnstile: soporta backend con "code" o con status/error
+        const isTurnstile =
+          data?.code === "TURNSTILE_REQUIRED" ||
+          data?.code === "TURNSTILE_FAILED" ||
+          res.status === 403 ||
+          (typeof data?.error === "string" && data.error.toLowerCase().includes("turnstile"));
+
+        if (isTurnstile) {
           setStatus(text.turnstile, "error");
         } else {
           setStatus(data?.error || text.error, "error");
         }
       }
-    } catch {
+    } catch (err) {
       setStatus(text.error, "error");
     } finally {
       setLoading(false);
     }
+
   });
 }
