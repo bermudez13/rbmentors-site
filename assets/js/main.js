@@ -1,7 +1,9 @@
+// /assets/js/main.js
+
 // Footer year
 const yearEl = document.getElementById("year");
 if (yearEl) {
-  yearEl.textContent = new Date().getFullYear();
+  yearEl.textContent = String(new Date().getFullYear());
 }
 
 // Scroll to top button
@@ -22,15 +24,31 @@ if (contactForm) {
   const btn = contactForm.querySelector('button[type="submit"]');
   const statusEl = contactForm.querySelector(".form-status");
 
-  const isSpanish = (document.documentElement.lang || "").toLowerCase().startsWith("es")
-    || window.location.pathname.startsWith("/es/");
+  const isSpanish =
+    (document.documentElement.lang || "").toLowerCase().startsWith("es") ||
+    window.location.pathname.startsWith("/es/");
 
   const text = {
     sending: isSpanish ? "Enviando..." : "Sending...",
-    sent: isSpanish ? "Listo. Recibí tu solicitud. Te responderé por email pronto." : "Done. I received your request. I’ll reply by email soon.",
-    error: isSpanish ? "No se pudo enviar. Intenta de nuevo en unos minutos." : "Could not send. Please try again in a few minutes.",
-    turnstile: isSpanish ? "Verifica el captcha y vuelve a intentar." : "Please complete the captcha and try again.",
-    invalid: isSpanish ? "Revisa los campos requeridos (nombre y email)." : "Please check required fields (name and email).",
+    sent: isSpanish
+      ? "Listo. Recibí tu solicitud. Te responderé por email pronto."
+      : "Done. I received your request. I’ll reply by email soon.",
+    error: isSpanish
+      ? "No se pudo enviar. Intenta de nuevo en unos minutos."
+      : "Could not send. Please try again in a few minutes.",
+    network: isSpanish
+      ? "Error de red. Revisa tu conexión e intenta de nuevo."
+      : "Network error. Check your connection and try again.",
+    timeout: isSpanish
+      ? "La solicitud tardó demasiado. Intenta de nuevo."
+      : "Request timed out. Please try again.",
+    turnstile: isSpanish
+      ? "Verifica el captcha y vuelve a intentar."
+      : "Please complete the captcha and try again.",
+    invalid: isSpanish
+      ? "Revisa los campos requeridos (nombre y email)."
+      : "Please check required fields (name and email).",
+    invalidEmail: isSpanish ? "El email no parece válido." : "Email doesn't look valid.",
   };
 
   function setStatus(message, kind) {
@@ -48,19 +66,60 @@ if (contactForm) {
     btn.textContent = loading ? text.sending : btn.dataset.originalText;
   }
 
+  function isValidEmail(email) {
+    const v = String(email || "").trim();
+    if (!v) return false;
+    if (v.length > 254) return false;
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  }
+
+  function resetTurnstileIfPresent() {
+    // Turnstile injects a hidden input and exposes window.turnstile.reset()
+    if (window.turnstile && typeof window.turnstile.reset === "function") {
+      try {
+        window.turnstile.reset();
+      } catch {
+        // ignore
+      }
+    }
+  }
+
+  let inFlight = false;
+
   contactForm.addEventListener("submit", async (e) => {
     e.preventDefault();
+    if (inFlight) return;
+
     setStatus("", null);
 
-    // HTML5 validity (since you set novalidate, we do it manually)
-    const name = contactForm.querySelector('input[name="name"]')?.value?.trim() || "";
-    const email = contactForm.querySelector('input[name="email"]')?.value?.trim() || "";
+    const name =
+      contactForm.querySelector('input[name="name"]')?.value?.trim() || "";
+    const email =
+      contactForm.querySelector('input[name="email"]')?.value?.trim() || "";
+
     if (!name || !email) {
       setStatus(text.invalid, "error");
       return;
     }
+    if (!isValidEmail(email)) {
+      setStatus(text.invalidEmail, "error");
+      return;
+    }
 
+    // If user didn't complete the captcha yet, fail fast (better UX)
+    const ts =
+      contactForm.querySelector('input[name="cf-turnstile-response"]')?.value?.trim() ||
+      "";
+    if (!ts) {
+      setStatus(text.turnstile, "error");
+      return;
+    }
+
+    inFlight = true;
     setLoading(true);
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     try {
       const formData = new FormData(contactForm);
@@ -69,25 +128,29 @@ if (contactForm) {
         method: "POST",
         body: formData,
         headers: { Accept: "application/json" },
+        signal: controller.signal,
       });
 
       const raw = await res.text();
       let data = {};
-      try { data = raw ? JSON.parse(raw) : {}; } catch {}
+      try {
+        data = raw ? JSON.parse(raw) : {};
+      } catch {
+        data = {};
+      }
 
       if (res.ok && data && data.ok) {
         setStatus(text.sent, "success");
         contactForm.reset();
-        if (window.turnstile && typeof window.turnstile.reset === "function") {
-          window.turnstile.reset();
-        }
+        resetTurnstileIfPresent();
       } else {
-        // Turnstile: soporta backend con "code" o con status/error
+        // Turnstile: supports backend "code", 403, or message
         const isTurnstile =
           data?.code === "TURNSTILE_REQUIRED" ||
           data?.code === "TURNSTILE_FAILED" ||
           res.status === 403 ||
-          (typeof data?.error === "string" && data.error.toLowerCase().includes("turnstile"));
+          (typeof data?.error === "string" &&
+            data.error.toLowerCase().includes("turnstile"));
 
         if (isTurnstile) {
           setStatus(text.turnstile, "error");
@@ -96,10 +159,15 @@ if (contactForm) {
         }
       }
     } catch (err) {
-      setStatus(text.error, "error");
+      if (err && err.name === "AbortError") {
+        setStatus(text.timeout, "error");
+      } else {
+        setStatus(text.network, "error");
+      }
     } finally {
+      clearTimeout(timeoutId);
       setLoading(false);
+      inFlight = false;
     }
-
   });
 }

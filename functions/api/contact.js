@@ -44,11 +44,11 @@ export async function onRequestPost(context) {
     let body = {};
 
     if (contentType.includes("application/json")) {
-      body = await request.json();
-    } else if (contentType.includes("application/x-www-form-urlencoded")) {
-      const form = await request.formData();
-      body = Object.fromEntries(form.entries());
-    } else if (contentType.includes("multipart/form-data")) {
+      body = await request.json().catch(() => ({}));
+    } else if (
+      contentType.includes("application/x-www-form-urlencoded") ||
+      contentType.includes("multipart/form-data")
+    ) {
       const form = await request.formData();
       body = Object.fromEntries(form.entries());
     } else {
@@ -60,28 +60,59 @@ export async function onRequestPost(context) {
       );
     }
 
-    const name = (body.name || "").toString().trim();
-    const email = (body.email || "").toString().trim();
-    const message = (body.message || "").toString().trim();
-    const turnstileToken =
+    // ---- Extract fields (trim + clamp to safe sizes) ----
+    const name = clamp((body.name || "").toString().trim(), 80);
+    const email = clamp((body.email || "").toString().trim(), 120);
+
+    // Optional fields
+    const phone = clamp((body.phone || "").toString().trim(), 30);
+    const language = clamp((body.language || "").toString().trim(), 30);
+    const message = clamp((body.message || "").toString().trim(), 1200);
+
+    // Turnstile token
+    const turnstileToken = clamp(
       (body["cf-turnstile-response"] || body.turnstileToken || "")
         .toString()
-        .trim();
+        .trim(),
+      5000
+    );
+
+    // Honeypot (anti-spam)
+    const honeypot = clamp((body.company || "").toString().trim(), 200);
 
     log("Incoming fields", {
       nameLen: name.length,
       emailLen: email.length,
+      phoneLen: phone.length,
+      language: language || null,
       messageLen: message.length,
       hasTurnstileToken: !!turnstileToken,
+      honeypotFilled: honeypot.length > 0,
       ip: request.headers.get("CF-Connecting-IP") || null,
     });
 
-    if (!name || !email || !message || !turnstileToken) {
+    // Require minimal fields (message is optional)
+    if (!name || !email || !turnstileToken) {
       return json(
-        { ok: false, error: "Missing required fields.", reqId },
+        { ok: false, error: "Missing required fields (name, email, captcha).", reqId },
         400,
         corsHeaders
       );
+    }
+
+    // Basic email sanity check (not RFC-perfect; good enough to cut obvious junk)
+    if (!isValidEmail(email)) {
+      return json(
+        { ok: false, error: "Invalid email address.", reqId },
+        400,
+        corsHeaders
+      );
+    }
+
+    // If honeypot filled: silently accept but do not send email
+    if (honeypot) {
+      log("Honeypot triggered. Skipping email send.");
+      return json({ ok: true, message: "Sent.", reqId }, 200, corsHeaders);
     }
 
     // ---- Turnstile verify ----
@@ -101,22 +132,34 @@ export async function onRequestPost(context) {
 
     if (!tsResp.ok || !tsJson?.success) {
       return json(
-        { ok: false, error: "Turnstile verification failed.", details: tsJson, reqId },
+        {
+          ok: false,
+          error: "Turnstile verification failed.",
+          code: "TURNSTILE_FAILED",
+          details: tsJson,
+          reqId,
+        },
         403,
         corsHeaders
       );
     }
 
     // ---- Resend ----
-    const subject = `${CONTACT_SUBJECT_PREFIX} Contact form submission`;
+    const subject = `${CONTACT_SUBJECT_PREFIX} Web Contact Form`;
+
+    const safePhone = phone ? phone : "(not provided)";
+    const safeLanguage = language ? language : "(not selected)";
+    const safeMessage = message ? message : "(no message provided)";
 
     const html = `
       <h2>New Contact Form Submission</h2>
       <p><strong>Name:</strong> ${escapeHtml(name)}</p>
       <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+      <p><strong>Phone:</strong> ${escapeHtml(safePhone)}</p>
+      <p><strong>Preferred language:</strong> ${escapeHtml(safeLanguage)}</p>
       <p><strong>Message:</strong></p>
       <pre style="white-space:pre-wrap;font-family:inherit;">${escapeHtml(
-        message
+        safeMessage
       )}</pre>
       <hr />
       <p><small>Request ID: ${reqId}</small></p>
@@ -178,9 +221,9 @@ export async function onRequestPost(context) {
       corsHeaders
     );
   } catch (err) {
-    console.error(`[contact] unhandled error`, err);
+    console.error(`[contact ${reqId}] unhandled error`, err);
     return json(
-      { ok: false, error: "Unhandled server error.", reqId: crypto.randomUUID() },
+      { ok: false, error: "Unhandled server error.", reqId },
       500,
       corsHeaders
     );
@@ -201,4 +244,15 @@ function escapeHtml(str) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
+}
+
+function clamp(value, maxLen) {
+  const s = String(value || "");
+  return s.length > maxLen ? s.slice(0, maxLen) : s;
+}
+
+function isValidEmail(email) {
+  if (!email) return false;
+  if (email.length > 254) return false;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }

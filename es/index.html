@@ -3,7 +3,44 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <title>Right Business Mentors | Preparación de Impuestos</title>
+
+    <meta
+      name="description"
+      content="Preparación de impuestos con un proceso claro, atención personalizada y un enfoque de cumplimiento con el IRS."
+    />
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://rbmentors.com/es/" />
+    <link rel="alternate" hreflang="es-US" href="https://rbmentors.com/es/" />
+    <link rel="alternate" hreflang="en-US" href="https://rbmentors.com/en/" />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href="https://rbmentors.com/en/"
+    />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="Right Business Mentors | Preparación de Impuestos"
+    />
+    <meta
+      property="og:description"
+      content="Preparación de impuestos con un proceso claro, atención personalizada y un enfoque de cumplimiento con el IRS."
+    />
+    <meta property="og:url" content="https://rbmentors.com/es/" />
+    <meta
+      property="og:image"
+      content="https://rbmentors.com/assets/img/hero/hero-tax.jpg"
+    />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Favicons -->
     <link
       rel="icon"
       type="image/png"
@@ -17,27 +54,36 @@
       href="/assets/img/favicon.png"
     />
 
-    <meta
-      name="description"
-      content="Tax preparation with a clear process, personalized attention, and compliance-first approach."
-    />
+    <!-- Styles -->
     <link rel="stylesheet" href="/assets/css/styles.css" />
+
+    <!-- Turnstile -->
+    <script
+      src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+      async
+      defer
+    ></script>
+
+    <!-- Main JS -->
+    <script src="/assets/js/main.js" defer></script>
   </head>
 
   <body>
+    <button id="scrollTopBtn" aria-label="Volver arriba">↑</button>
+
     <div class="topbar">
       <div class="container bar-inner">
         <div>
-          <span class="badge badge-strong">Referral offer</span>
-          <span style="margin-left: 0.5rem"
-            >Earn <strong>$100</strong> for each referral who files with
-            me.</span
-          >
+          <span class="badge badge-strong">Oferta por referidos</span>
+          <span style="margin-left: 0.5rem">
+            Gana <strong>$100</strong> por cada referido que haga sus impuestos
+            conmigo.
+          </span>
         </div>
         <div>
-          <a href="/en/#contact" style="text-decoration: underline"
-            >Get a free quote</a
-          >
+          <a href="/es/#contact" style="text-decoration: underline">
+            Obtener cotización gratis
+          </a>
         </div>
       </div>
     </div>
@@ -45,10 +91,10 @@
     <header>
       <div class="container header-inner">
         <a class="logo" href="/es/">Right Business Mentors</a>
-        <nav class="site-nav" aria-label="Navegación principal">
+        <nav aria-label="Navegación principal">
           <a href="/es/">Inicio</a>
           <a href="/es/#services">Servicios</a>
-          <a href="/es/#about">Sobre nosotros</a>
+          <a href="/es/#about">Sobre mí</a>
           <a href="/es/#contact">Contacto</a>
           <span style="margin-left: 0.75rem; opacity: 0.8">|</span>
           <a href="/en/">EN</a>
@@ -61,32 +107,33 @@
         <div class="container hero-grid">
           <div class="hero-content">
             <h1>
-              Reduce tus taxes.<br />
+              Paga menos impuestos.<br />
               Menos estrés.<br />
-              Cumplimiento con el IRS.
+              Cumple con el IRS.
             </h1>
 
             <p class="hero-subtitle">
-              Preparación y planificación de taxes para individuos, familias y
-              trabajadores independientes.
+              Preparación y planificación de impuestos para individuos, familias
+              y trabajadores independientes.
             </p>
 
             <div class="hero-actions">
-              <a href="/es/#contact" class="btn btn-primary"
-                >Pedir cotización gratis</a
-              >
+              <a href="/es/#contact" class="btn btn-primary">
+                Obtener una cotización gratis
+              </a>
             </div>
 
             <p class="hero-trust">
-              ✔ Trusted guidance • ✔ Secure handling • ✔ IRS-compliant
+              ✔ Guía confiable • ✔ Manejo seguro • ✔ Cumplimiento con el IRS
             </p>
           </div>
 
           <div class="hero-image">
             <img
               src="/assets/img/hero/hero-tax.jpg"
-              alt="Professional tax preparation and financial consulting"
+              alt="Preparación profesional de impuestos y asesoría financiera"
               loading="eager"
+              fetchpriority="high"
             />
           </div>
         </div>
@@ -94,59 +141,59 @@
 
       <section class="promo" id="promo">
         <div class="container promo-grid">
-          <!-- Free Quote -->
+          <!-- Cotización -->
           <div class="promo-card">
             <img
               class="icon icon-lg"
               src="/assets/img/icons/free-consultation-dark.png"
-              alt="Free quote icon"
+              alt="Icono de cotización gratis"
               loading="lazy"
             />
             <div>
-              <h2 class="promo-title">Get a Free Quote</h2>
+              <h2 class="promo-title">Cotización gratis</h2>
               <p class="promo-text">
-                Tell me your situation (W-2, 1099, LLC, dependents, etc.) and
-                I’ll reply with a clear estimate and next steps.
+                Cuéntame tu situación (W-2, 1099, LLC, dependientes, etc.) y te
+                responderé con un estimado claro y los próximos pasos.
               </p>
               <div class="promo-actions">
-                <a class="btn btn-primary" href="/en/#contact"
-                  >Request a Free Quote</a
-                >
+                <a class="btn btn-primary" href="/es/#contact">
+                  Pedir cotización gratis
+                </a>
                 <a
                   class="btn btn-secondary"
-                  href="/assets/docs/tax-documents-checklist-en.pdf"
+                  href="/assets/docs/tax-documents-checklist-es.pdf"
                   target="_blank"
                   rel="noopener"
                 >
-                  Documents Checklist (PDF)
+                  Lista de documentos (PDF)
                 </a>
               </div>
             </div>
           </div>
 
-          <!-- Referral -->
+          <!-- Referidos -->
           <div class="promo-card promo-card-strong">
             <img
               class="icon icon-lg"
               src="/assets/img/icons/referral-program-2.png"
-              alt="Referral program icon"
+              alt="Icono del programa de referidos"
               loading="lazy"
             />
             <div>
-              <span class="promo-badge">$100 Referral Program</span>
-              <h2 class="promo-title">Earn $100 per referral</h2>
+              <span class="promo-badge">Programa de referidos $100</span>
+              <h2 class="promo-title">Gana $100 por cada referido</h2>
               <p class="promo-text">
-                When your referral files their taxes with me, you get
-                <strong>$100</strong>. Ask for details and eligibility.
+                Cuando tu referido haga sus impuestos conmigo, recibes
+                <strong>$100</strong>. Pregunta por los detalles y elegibilidad.
               </p>
               <div class="promo-actions">
-                <a class="btn btn-secondary" href="/en/#contact"
-                  >Ask about the referral offer</a
-                >
+                <a class="btn btn-secondary" href="/es/#contact">
+                  Preguntar por la oferta de referidos
+                </a>
               </div>
               <p class="promo-fineprint">
-                Referral reward applies after the referred client completes and
-                pays for their tax filing service.
+                La recompensa aplica después de que el cliente referido complete
+                y pague el servicio de preparación de impuestos.
               </p>
             </div>
           </div>
@@ -156,11 +203,11 @@
       <section class="services" id="services">
         <div class="container">
           <div class="section-head">
-            <p class="kicker">SERVICES</p>
-            <h2>Maximize savings, minimize stress</h2>
+            <p class="kicker">SERVICIOS</p>
+            <h2>Más ahorro, menos estrés</h2>
             <p class="muted">
-              Tax preparation and guidance focused on accuracy, compliance, and
-              clear communication.
+              Preparación de impuestos y orientación enfocada en exactitud,
+              cumplimiento y comunicación clara.
             </p>
           </div>
 
@@ -169,13 +216,13 @@
               <img
                 class="icon"
                 src="/assets/img/icons/tax-preparation-dark.png"
-                alt="Tax preparation"
+                alt="Preparación de impuestos"
                 loading="lazy"
               />
-              <h3>Tax Preparation</h3>
+              <h3>Preparación de impuestos</h3>
               <p>
-                Accurate personal and business returns to help you claim
-                eligible deductions and credits.
+                Declaraciones personales y de negocio con precisión para
+                ayudarte a reclamar deducciones y créditos elegibles.
               </p>
             </article>
 
@@ -183,12 +230,13 @@
               <img
                 class="icon"
                 src="/assets/img/icons/financial-growth-dark.png"
-                alt="Tax planning"
+                alt="Planificación de impuestos"
                 loading="lazy"
               />
-              <h3>Tax Planning</h3>
+              <h3>Planificación de impuestos</h3>
               <p>
-                Year-round strategies to reduce tax burden and avoid surprises.
+                Estrategias durante el año para reducir la carga fiscal y evitar
+                sorpresas.
               </p>
             </article>
 
@@ -196,13 +244,13 @@
               <img
                 class="icon"
                 src="/assets/img/icons/self-employed-dark.png"
-                alt="Self-employed taxes"
+                alt="Impuestos para trabajadores independientes"
                 loading="lazy"
               />
-              <h3>Self-Employed Taxes</h3>
+              <h3>Impuestos para independientes</h3>
               <p>
-                Support for 1099 contractors and gig workers: expenses, mileage,
-                and compliance.
+                Apoyo a contratistas 1099 y gig workers: gastos, millaje y
+                cumplimiento.
               </p>
             </article>
 
@@ -213,10 +261,10 @@
                 alt="E-file"
                 loading="lazy"
               />
-              <h3>E-file Support</h3>
+              <h3>Soporte de e-file</h3>
               <p>
-                Electronic filing options with a smooth process and clear next
-                steps.
+                Opciones de presentación electrónica con un proceso claro y
+                próximos pasos definidos.
               </p>
             </article>
 
@@ -224,13 +272,13 @@
               <img
                 class="icon"
                 src="/assets/img/icons/irs-compliance-dark.png"
-                alt="IRS compliance"
+                alt="Cumplimiento con el IRS"
                 loading="lazy"
               />
-              <h3>IRS Compliance</h3>
+              <h3>Cumplimiento con el IRS</h3>
               <p>
-                Guidance aligned with IRS requirements to reduce errors and
-                audit risk.
+                Orientación alineada con requisitos del IRS para reducir errores
+                y riesgo de auditoría.
               </p>
             </article>
 
@@ -238,18 +286,18 @@
               <img
                 class="icon"
                 src="/assets/img/icons/document-checklist-dark.png"
-                alt="Documents checklist"
+                alt="Lista de documentos"
                 loading="lazy"
               />
-              <h3>Documents Checklist</h3>
+              <h3>Lista de documentos</h3>
               <p>
-                Use my checklist to bring the right documents and keep your
-                filing on track.
+                Usa mi lista para traer los documentos correctos y mantener tu
+                declaración en orden.
                 <a
-                  href="/assets/docs/tax-documents-checklist-en.pdf"
+                  href="/assets/docs/tax-documents-checklist-es.pdf"
                   target="_blank"
                   rel="noopener"
-                  >Download PDF</a
+                  >Descargar PDF</a
                 >
               </p>
             </article>
@@ -260,10 +308,11 @@
       <section class="how" id="how">
         <div class="container">
           <div class="section-head">
-            <p class="kicker">HOW IT WORKS</p>
-            <h2>Simple process. Clear communication.</h2>
+            <p class="kicker">CÓMO FUNCIONA</p>
+            <h2>Proceso simple. Comunicación clara.</h2>
             <p class="muted">
-              From first contact to filing, you’ll always know what’s next.
+              Desde el primer contacto hasta presentar, siempre sabrás qué
+              sigue.
             </p>
           </div>
 
@@ -272,12 +321,12 @@
               <img
                 class="icon"
                 src="/assets/img/icons/contact-mail-dark.png"
-                alt="Contact"
+                alt="Contacto"
                 loading="lazy"
               />
-              <h3>1) Contact</h3>
+              <h3>1) Contacto</h3>
               <p>
-                Send your basic info and a short description of your situation.
+                Envía tu información básica y una breve descripción de tu caso.
               </p>
             </article>
 
@@ -285,36 +334,40 @@
               <img
                 class="icon"
                 src="/assets/img/icons/document-checklist-dark.png"
-                alt="Documents"
+                alt="Documentos"
                 loading="lazy"
               />
-              <h3>2) Share documents</h3>
-              <p>Use the checklist and securely share the documents we need.</p>
+              <h3>2) Comparte documentos</h3>
+              <p>
+                Usa la lista y comparte de forma segura los documentos
+                necesarios.
+              </p>
             </article>
 
             <article class="card">
               <img
                 class="icon"
                 src="/assets/img/icons/irs-compliance-dark.png"
-                alt="File"
+                alt="Presentación"
                 loading="lazy"
               />
-              <h3>3) Review & file</h3>
+              <h3>3) Revisión y presentación</h3>
               <p>
-                We review everything together, then file with accuracy and
-                compliance in mind.
+                Revisamos todo juntos y luego presentamos con precisión y
+                enfoque en cumplimiento.
               </p>
             </article>
           </div>
 
           <div class="how-cta">
-            <h3>Ready to get started?</h3>
+            <h3>¿Listo para comenzar?</h3>
             <p class="muted">
-              Request a free quote and I’ll reply with next steps.
+              Solicita una cotización gratis y te respondo con los próximos
+              pasos.
             </p>
-            <a class="btn btn-primary" href="/en/#contact"
-              >Request a Free Quote</a
-            >
+            <a class="btn btn-primary" href="/es/#contact">
+              Pedir cotización gratis
+            </a>
           </div>
         </div>
       </section>
@@ -322,42 +375,42 @@
       <section class="about" id="about">
         <div class="container about-grid">
           <div class="about-content">
-            <span class="section-eyebrow">About Right Business Mentors</span>
-            <h2>A trusted partner for tax preparation and planning</h2>
+            <span class="section-eyebrow">Sobre Right Business Mentors</span>
+            <h2>
+              Un aliado confiable para preparación y planificación de impuestos
+            </h2>
 
             <p>
-              At <strong>Right Business Mentors</strong>, we help individuals,
-              families, and small businesses navigate the tax system with
-              clarity and confidence. Our approach combines accuracy,
-              compliance, and personalized guidance—so you always know where you
-              stand.
+              En <strong>Right Business Mentors</strong> ayudamos a individuos,
+              familias y pequeños negocios a navegar el sistema de impuestos con
+              claridad y confianza. Nuestro enfoque combina exactitud,
+              cumplimiento y orientación personalizada, para que siempre sepas
+              dónde estás parado.
             </p>
 
             <p>
-              Whether you are filing a simple return, working as a 1099
-              contractor, or managing a growing business, our goal is to reduce
-              stress, minimize risk, and help you make informed financial
-              decisions.
+              Ya sea que tengas una declaración simple, trabajes como
+              contratista 1099 o estés manejando un negocio en crecimiento,
+              nuestro objetivo es reducir el estrés, minimizar riesgos y
+              ayudarte a tomar mejores decisiones financieras.
             </p>
 
             <ul class="about-points">
-              <li>✔ IRS-compliant preparation and guidance</li>
-              <li>✔ Clear communication — no surprises</li>
-              <li>
-                ✔ Support for individuals, families, and self-employed clients
-              </li>
-              <li>✔ Technology-driven, secure document handling</li>
+              <li>✔ Preparación y guía alineada con el IRS</li>
+              <li>✔ Comunicación clara — sin sorpresas</li>
+              <li>✔ Apoyo a individuos, familias e independientes</li>
+              <li>✔ Manejo seguro de documentos con tecnología</li>
             </ul>
 
-            <a href="/en/#contact" class="btn btn-outline">
-              Get a Free Quote
+            <a href="/es/#contact" class="btn btn-outline">
+              Obtener una cotización gratis
             </a>
           </div>
 
           <div class="about-visual">
             <img
               src="/assets/img/logo1.png"
-              alt="Trusted tax guidance"
+              alt="Asesoría confiable en impuestos"
               loading="lazy"
             />
           </div>
@@ -367,74 +420,77 @@
       <section class="faq" id="faq">
         <div class="container">
           <div class="section-head">
-            <p class="kicker">FAQ</p>
-            <h2>Frequently asked questions</h2>
-            <p class="muted">Clear answers before you get started.</p>
+            <p class="kicker">PREGUNTAS FRECUENTES</p>
+            <h2>Preguntas frecuentes</h2>
+            <p class="muted">Respuestas claras antes de comenzar.</p>
           </div>
 
           <div class="faq-grid">
             <details class="faq-item" open>
-              <summary>What services do you offer?</summary>
+              <summary>¿Qué servicios ofreces?</summary>
               <p>
-                Tax preparation, tax planning, self-employed (1099) taxes,
-                e-file support, IRS compliance guidance, and amended returns
-                when needed.
+                Preparación de impuestos, planificación, impuestos para
+                trabajadores independientes (1099), soporte de e-file, guía de
+                cumplimiento con el IRS y enmiendas cuando sea necesario.
               </p>
             </details>
 
             <details class="faq-item">
-              <summary>How do I get a free quote?</summary>
+              <summary>¿Cómo obtengo una cotización gratis?</summary>
               <p>
-                Use the contact form and briefly describe your situation (W-2,
-                1099, LLC, dependents). I’ll reply with an estimate and next
-                steps.
+                Usa el formulario de contacto y describe brevemente tu situación
+                (W-2, 1099, LLC, dependientes). Te respondo con un estimado y
+                los próximos pasos.
               </p>
             </details>
 
             <details class="faq-item">
-              <summary>What documents do I need?</summary>
+              <summary>¿Qué documentos necesito?</summary>
               <p>
-                It depends on your case. Start with my
+                Depende de tu caso. Empieza con mi
                 <a
-                  href="/assets/docs/tax-documents-checklist-en.pdf"
+                  href="/assets/docs/tax-documents-checklist-es.pdf"
                   target="_blank"
                   rel="noopener"
                 >
-                  documents checklist (PDF) </a
+                  lista de documentos (PDF) </a
                 >.
               </p>
             </details>
 
             <details class="faq-item">
-              <summary>Do you offer e-file?</summary>
+              <summary>¿Ofreces e-file?</summary>
               <p>
-                Yes. Electronic filing is available for eligible returns, with a
-                clear review before submission.
+                Sí. La presentación electrónica está disponible para
+                declaraciones elegibles, con una revisión clara antes de enviar.
               </p>
             </details>
 
             <details class="faq-item">
-              <summary>How much do you charge?</summary>
+              <summary>¿Cuánto cobras?</summary>
               <p>
-                Pricing depends on forms and complexity. I don’t post fixed
-                prices—request a free quote for a clear estimate.
+                El precio depende de los formularios y la complejidad. No
+                publico precios fijos — solicita una cotización gratis para un
+                estimado claro.
               </p>
             </details>
 
             <details class="faq-item">
-              <summary>How does the $100 referral program work?</summary>
+              <summary>
+                ¿Cómo funciona el programa de referidos de $100?
+              </summary>
               <p>
-                When your referral completes and pays for their tax filing
-                service, you receive a $100 referral reward. Ask for details and
-                eligibility.
+                Cuando tu referido completa y paga el servicio de impuestos,
+                recibes una recompensa de $100. Pregunta por los detalles y
+                elegibilidad.
               </p>
             </details>
           </div>
 
           <div class="faq-cta">
-            <a class="btn btn-primary" href="/en/#contact"
-              >Request a Free Quote</a
-            >
+            <a class="btn btn-primary" href="/es/#contact">
+              Pedir cotización gratis
+            </a>
           </div>
         </div>
       </section>
@@ -442,15 +498,15 @@
       <section class="contact" id="contact">
         <div class="container contact-grid">
           <div class="contact-info">
-            <p class="kicker">CONTACT</p>
-            <h2>Request a free quote</h2>
+            <p class="kicker">CONTACTO</p>
+            <h2>Solicita una cotización gratis</h2>
             <p class="muted">
-              Send your basic information and a short message. I’ll reply by
-              email within 24 hours.
+              Envía tu información básica y un mensaje corto. Te respondo por
+              email dentro de 24 horas.
             </p>
 
             <p class="contact-note">
-              Preferred contact method: <strong>Email</strong>
+              Método de contacto preferido: <strong>Email</strong>
             </p>
           </div>
 
@@ -470,13 +526,14 @@
             />
 
             <div class="form-group">
-              <label for="name">Name *</label>
+              <label for="name">Nombre *</label>
               <input
                 id="name"
                 name="name"
                 type="text"
                 required
                 maxlength="80"
+                autocomplete="name"
               />
             </div>
 
@@ -488,25 +545,32 @@
                 type="email"
                 required
                 maxlength="120"
+                autocomplete="email"
               />
             </div>
 
             <div class="form-group">
-              <label for="phone">Phone (optional)</label>
-              <input id="phone" name="phone" type="tel" maxlength="30" />
+              <label for="phone">Teléfono (opcional)</label>
+              <input
+                id="phone"
+                name="phone"
+                type="tel"
+                maxlength="30"
+                autocomplete="tel"
+              />
             </div>
 
             <div class="form-group">
-              <label for="language">Preferred language (optional)</label>
+              <label for="language">Idioma preferido (opcional)</label>
               <select id="language" name="language">
-                <option value="">— Select —</option>
-                <option value="English">English</option>
-                <option value="Spanish">Spanish</option>
+                <option value="">— Seleccionar —</option>
+                <option value="Español">Español</option>
+                <option value="Inglés">Inglés</option>
               </select>
             </div>
 
             <div class="form-group">
-              <label for="message">Message (optional)</label>
+              <label for="message">Mensaje (opcional)</label>
               <textarea
                 id="message"
                 name="message"
@@ -515,11 +579,21 @@
               ></textarea>
             </div>
 
-            <button type="submit" class="btn btn-primary">Send request</button>
+            <div class="form-group">
+              <div
+                class="cf-turnstile"
+                data-sitekey="0x4AAAAAACJBqVVBTeO0e2dR"
+              ></div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+              Enviar solicitud
+            </button>
+            <div class="form-status" role="status" aria-live="polite"></div>
 
             <p class="form-fine">
-              Your information is kept private and used only to respond to your
-              request.
+              Tu información se mantiene privada y se usa únicamente para
+              responder a tu solicitud.
             </p>
           </form>
         </div>
@@ -528,67 +602,62 @@
       <footer class="site-footer" id="footer">
         <div class="container footer-grid">
           <div class="footer-col">
-            <a class="footer-brand" href="/en/">Right Business Mentors </a>
-            <p class="footer-tagline">Your Pathway to Financial Peace</p>
+            <a class="footer-brand" href="/es/">Right Business Mentors</a>
+            <p class="footer-tagline">Tu camino hacia la paz financiera</p>
             <p class="footer-text">
-              Tax preparation and guidance focused on accuracy, compliance, and
-              clear communication.
+              Preparación de impuestos y orientación enfocada en exactitud,
+              cumplimiento y comunicación clara.
             </p>
           </div>
 
           <div class="footer-col">
-            <h4>Links</h4>
+            <h4>Enlaces</h4>
             <ul class="footer-links">
-              <li><a href="/en/#services">Services</a></li>
-              <li><a href="/en/#about">About</a></li>
-              <li><a href="/en/#contact">Contact</a></li>
+              <li><a href="/es/#services">Servicios</a></li>
+              <li><a href="/es/#about">Sobre mí</a></li>
+              <li><a href="/es/#contact">Contacto</a></li>
               <li>
                 <a
-                  href="/assets/docs/tax-documents-checklist-en.pdf"
+                  href="/assets/docs/tax-documents-checklist-es.pdf"
                   target="_blank"
                   rel="noopener"
-                  >Documents Checklist (PDF)</a
+                  >Lista de documentos (PDF)</a
                 >
               </li>
             </ul>
           </div>
 
           <div class="footer-col">
-            <h4>Contact</h4>
-
+            <h4>Contacto</h4>
             <ul class="footer-links">
-              <li>
-                <a href="/en/#contact">Contact by email</a>
-              </li>
+              <li><a href="/es/#contact">Contactar por email</a></li>
             </ul>
-
             <p class="footer-fine">
-              Contact by email. I reply within 24 hours.
+              Contacto por email. Respondo dentro de 24 horas.
             </p>
           </div>
 
           <div class="footer-col">
-            <h4>Language</h4>
+            <h4>Idioma</h4>
             <ul class="footer-links">
-              <li><a href="/en/">English</a></li>
               <li><a href="/es/">Español</a></li>
+              <li><a href="/en/">English</a></li>
             </ul>
+
             <h4 class="footer-subhead">Legal</h4>
             <ul class="footer-links">
-              <li><a href="/en/privacy/">Privacy Policy</a></li>
+              <li><a href="/es/privacy/">Política de Privacidad</a></li>
             </ul>
           </div>
         </div>
 
         <div class="container footer-bottom">
           <p>
-            © <span id="year"></span> Right Business Mentors. All rights
-            reserved.
+            © <span id="year"></span> Right Business Mentors. Todos los derechos
+            reservados.
           </p>
         </div>
       </footer>
     </main>
   </body>
-  <script src="/assets/js/main.js" defer></script>
-  <button id="scrollTopBtn" aria-label="Back to top">↑</button>
 </html>

@@ -3,7 +3,44 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <title>Right Business Mentors | Tax Preparation</title>
+
+    <meta
+      name="description"
+      content="Tax preparation with a clear process, personalized attention, and compliance-first approach."
+    />
+    <link rel="alternate" hreflang="en-US" href="https://rbmentors.com/en/" />
+    <link rel="alternate" hreflang="es-US" href="https://rbmentors.com/es/" />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href="https://rbmentors.com/en/"
+    />
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://rbmentors.com/en/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="Right Business Mentors | Tax Preparation"
+    />
+    <meta
+      property="og:description"
+      content="Tax preparation with a clear process, personalized attention, and compliance-first approach."
+    />
+    <meta property="og:url" content="https://rbmentors.com/en/" />
+    <meta
+      property="og:image"
+      content="https://rbmentors.com/assets/img/hero/hero-tax.jpg"
+    />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Favicons -->
     <link
       rel="icon"
       type="image/png"
@@ -17,35 +54,35 @@
       href="/assets/img/favicon.png"
     />
 
-    <meta
-      name="description"
-      content="Tax preparation with a clear process, personalized attention, and compliance-first approach."
-    />
+    <!-- Styles -->
     <link rel="stylesheet" href="/assets/css/styles.css" />
 
+    <!-- Turnstile -->
     <script
       src="https://challenges.cloudflare.com/turnstile/v0/api.js"
       async
       defer
     ></script>
+
+    <!-- Main JS -->
+    <script src="/assets/js/main.js" defer></script>
   </head>
-  <script src="/assets/js/main.js" defer></script>
 
   <body>
     <button id="scrollTopBtn" aria-label="Back to top">↑</button>
+
     <div class="topbar">
       <div class="container bar-inner">
         <div>
           <span class="badge badge-strong">Referral offer</span>
-          <span style="margin-left: 0.5rem"
-            >Earn <strong>$100</strong> for each referral who files with
-            me.</span
-          >
+          <span style="margin-left: 0.5rem">
+            Earn <strong>$100</strong> for each referral who files with me.
+          </span>
         </div>
         <div>
-          <a href="/en/#contact" style="text-decoration: underline"
-            >Get a free quote</a
-          >
+          <a href="/en/#contact" style="text-decoration: underline">
+            Get a free quote
+          </a>
         </div>
       </div>
     </div>
@@ -95,6 +132,7 @@
               src="/assets/img/hero/hero-tax.jpg"
               alt="Professional tax preparation and financial consulting"
               loading="eager"
+              fetchpriority="high"
             />
           </div>
         </div>
@@ -357,9 +395,7 @@
               <li>✔ Technology-driven, secure document handling</li>
             </ul>
 
-            <a href="/en/#contact" class="btn btn-outline">
-              Get a Free Quote
-            </a>
+            <a href="/en/#contact" class="btn btn-outline">Get a Free Quote</a>
           </div>
 
           <div class="about-visual">
@@ -485,6 +521,7 @@
                 type="text"
                 required
                 maxlength="80"
+                autocomplete="name"
               />
             </div>
 
@@ -496,12 +533,19 @@
                 type="email"
                 required
                 maxlength="120"
+                autocomplete="email"
               />
             </div>
 
             <div class="form-group">
               <label for="phone">Phone (optional)</label>
-              <input id="phone" name="phone" type="tel" maxlength="30" />
+              <input
+                id="phone"
+                name="phone"
+                type="tel"
+                maxlength="30"
+                autocomplete="tel"
+              />
             </div>
 
             <div class="form-group">
@@ -522,6 +566,7 @@
                 maxlength="1200"
               ></textarea>
             </div>
+
             <div class="form-group">
               <div
                 class="cf-turnstile"
@@ -543,7 +588,7 @@
       <footer class="site-footer" id="footer">
         <div class="container footer-grid">
           <div class="footer-col">
-            <a class="footer-brand" href="/en/">Right Business Mentors </a>
+            <a class="footer-brand" href="/en/">Right Business Mentors</a>
             <p class="footer-tagline">Your Pathway to Financial Peace</p>
             <p class="footer-text">
               Tax preparation and guidance focused on accuracy, compliance, and
@@ -570,13 +615,9 @@
 
           <div class="footer-col">
             <h4>Contact</h4>
-
             <ul class="footer-links">
-              <li>
-                <a href="/en/#contact">Contact by email</a>
-              </li>
+              <li><a href="/en/#contact">Contact by email</a></li>
             </ul>
-
             <p class="footer-fine">
               Contact by email. I reply within 24 hours.
             </p>
@@ -588,6 +629,7 @@
               <li><a href="/en/">English</a></li>
               <li><a href="/es/">Español</a></li>
             </ul>
+
             <h4 class="footer-subhead">Legal</h4>
             <ul class="footer-links">
               <li><a href="/en/privacy/">Privacy Policy</a></li>
