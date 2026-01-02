@@ -133,7 +133,8 @@ export async function onRequestPost(context) {
     );
 
     // Honeypot (anti-spam)
-    const honeypot = clamp((body.company || "").toString().trim(), 200);
+    const honeypot = clamp((body.website || "").toString().trim(), 200);
+
 
     log("Incoming fields", {
       nameLen: name.length,
