@@ -1,0 +1,5 @@
+/sitemap.xml /sitemap.xml 200
+/robots.txt /robots.txt 200
+
+/ /es/ 301
+/index.html /es/ 301

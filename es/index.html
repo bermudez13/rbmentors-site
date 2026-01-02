@@ -36,21 +36,31 @@
       property="og:image"
       content="https://rbmentors.com/assets/img/hero/hero-tax.jpg"
     />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="es_US" />
+    <meta property="og:locale:alternate" content="en_US" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Right Business Mentors | Preparación de Impuestos"
+    />
+    <meta
+      name="twitter:description"
+      content="Preparación de impuestos con un proceso claro, atención personalizada y un enfoque de cumplimiento con el IRS."
+    />
+    <meta
+      name="twitter:image"
+      content="https://rbmentors.com/assets/img/hero/hero-tax.jpg"
+    />
 
     <!-- Favicons -->
     <link
       rel="icon"
       type="image/png"
       sizes="32x32"
-      href="/assets/img/favicon.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
       href="/assets/img/favicon.png"
     />
 
@@ -66,6 +76,16 @@
 
     <!-- Main JS -->
     <script src="/assets/js/main.js" defer></script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Right Business Mentors",
+        "url": "https://rbmentors.com/es/",
+        "logo": "https://rbmentors.com/assets/img/logo1.png"
+      }
+    </script>
   </head>
 
   <body>
@@ -139,7 +159,7 @@
               sizes="(max-width: 900px) 100vw, 50vw"
               width="1200"
               height="672"
-              alt="Professional tax preparation and financial consulting"
+              alt="Preparación profesional de impuestos y asesoría financiera"
               loading="eager"
               fetchpriority="high"
             />
@@ -606,7 +626,8 @@
 
             <p class="form-fine">
               Tu información se mantiene privada y se usa únicamente para
-              responder a tu solicitud.
+              responder a tu solicitud. Por favor, no envíes tu SSN ni
+              documentos completos de impuestos por este formulario.
             </p>
           </form>
         </div>
