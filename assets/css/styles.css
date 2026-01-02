@@ -636,7 +636,12 @@ textarea:focus {
     display: inline-block;
   }
 }
-
+.about-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
 /* =====================
    13) FAQ
 ===================== */
