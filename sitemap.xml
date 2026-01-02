@@ -2,7 +2,14 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
-  <!-- Home -->
+  <url>
+    <loc>https://rbmentors.com/es/</loc>
+    <xhtml:link rel="alternate" hreflang="es-US" href="https://rbmentors.com/es/" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://rbmentors.com/en/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://rbmentors.com/es/" />
+    <priority>1.0</priority>
+  </url>
+
   <url>
     <loc>https://rbmentors.com/en/</loc>
     <xhtml:link rel="alternate" hreflang="en-US" href="https://rbmentors.com/en/" />
@@ -12,44 +19,30 @@
   </url>
 
   <url>
-    <loc>https://rbmentors.com/es/</loc>
-    <xhtml:link rel="alternate" hreflang="es-US" href="https://rbmentors.com/es/" />
-    <xhtml:link rel="alternate" hreflang="en-US" href="https://rbmentors.com/en/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://rbmentors.com/es/" />
-    <priority>1.0</priority>
+    <loc>https://rbmentors.com/es/about/</loc>
+    <xhtml:link rel="alternate" hreflang="es-US" href="https://rbmentors.com/es/about/" />
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://rbmentors.com/en/about/" />
+    <priority>0.6</priority>
   </url>
 
-  <!-- About -->
   <url>
     <loc>https://rbmentors.com/en/about/</loc>
     <xhtml:link rel="alternate" hreflang="en-US" href="https://rbmentors.com/en/about/" />
     <xhtml:link rel="alternate" hreflang="es-US" href="https://rbmentors.com/es/about/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://rbmentors.com/es/about/" />
     <priority>0.6</priority>
-  </url>
-
-  <url>
-    <loc>https://rbmentors.com/es/about/</loc>
-    <xhtml:link rel="alternate" hreflang="es-US" href="https://rbmentors.com/es/about/" />
-    <xhtml:link rel="alternate" hreflang="en-US" href="https://rbmentors.com/en/about/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://rbmentors.com/es/about/" />
-    <priority>0.6</priority>
-  </url>
-
-  <!-- Privacy -->
-  <url>
-    <loc>https://rbmentors.com/en/privacy/</loc>
-    <xhtml:link rel="alternate" hreflang="en-US" href="https://rbmentors.com/en/privacy/" />
-    <xhtml:link rel="alternate" hreflang="es-US" href="https://rbmentors.com/es/privacy/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://rbmentors.com/es/privacy/" />
-    <priority>0.5</priority>
   </url>
 
   <url>
     <loc>https://rbmentors.com/es/privacy/</loc>
     <xhtml:link rel="alternate" hreflang="es-US" href="https://rbmentors.com/es/privacy/" />
     <xhtml:link rel="alternate" hreflang="en-US" href="https://rbmentors.com/en/privacy/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://rbmentors.com/es/privacy/" />
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://rbmentors.com/en/privacy/</loc>
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://rbmentors.com/en/privacy/" />
+    <xhtml:link rel="alternate" hreflang="es-US" href="https://rbmentors.com/es/privacy/" />
     <priority>0.5</priority>
   </url>
 
