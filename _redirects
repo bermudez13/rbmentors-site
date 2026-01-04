@@ -1,5 +1,5 @@
-/sitemap.xml /public/sitemap.xml 200
-/robots.txt  /public/robots.txt  200
-
+# Redirección de raíz a español (home principal)
 / /es/ 301
+
+# Redirección de index.html a home en español
 /index.html /es/ 301
