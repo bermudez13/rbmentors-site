@@ -1,0 +1,3 @@
+Contact: mailto:rafael@rbmentors.com
+Expires: 2026-12-31
+Preferred-Languages: en, es
