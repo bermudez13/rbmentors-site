@@ -699,6 +699,12 @@ textarea:focus {
   align-items: flex-start;
 }
 
+.about-link {
+  font-weight: 600;
+  color: var(--c-mid);
+  text-decoration: underline;
+}
+
 /* =====================
    13) FAQ
 ===================== */
