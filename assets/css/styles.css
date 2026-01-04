@@ -432,6 +432,23 @@ textarea:focus {
   color: var(--c-cream);
 }
 
+/* Hero H1 – mobile typography polish */
+@media (max-width: 900px) {
+  .hero-content h1 {
+    line-height: 1.15; /* más compacto */
+    letter-spacing: -0.01em; /* mejora lectura en grande */
+    margin-bottom: 1rem;
+  }
+}
+
+/* Extra fino para móviles pequeños */
+@media (max-width: 600px) {
+  .hero-content h1 {
+    font-size: 2.1rem; /* antes: 2.4rem */
+    line-height: 1.12;
+  }
+}
+
 /* =====================
    9) PROMO (FREE QUOTE + REFERRAL)
 ===================== */
@@ -448,12 +465,22 @@ textarea:focus {
 
 .promo-card {
   display: flex;
-  gap: 1rem;
+  flex-direction: column; /* icon above content */
+  gap: 0.75rem;
   align-items: flex-start;
   background: var(--c-cream);
   border: var(--border-strong);
   border-radius: var(--radius-lg);
   padding: 1.5rem;
+}
+
+.promo-card > div {
+  width: 100%;
+}
+
+.promo-card .icon,
+.promo-card .icon-lg {
+  margin: 0 auto 0.75rem;
 }
 
 .promo-card-strong {
@@ -539,8 +566,22 @@ textarea:focus {
 
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.25rem;
+}
+
+/* <= 900px: 2 columns */
+@media (max-width: 900px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* <= 600px: 1 column */
+@media (max-width: 600px) {
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .card {
@@ -560,12 +601,6 @@ textarea:focus {
   margin: 0;
   color: var(--c-ink);
   opacity: 0.9;
-}
-
-@media (max-width: 900px) {
-  .cards-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* =====================
@@ -588,6 +623,26 @@ textarea:focus {
 .how-cta h3 {
   margin: 0 0 0.5rem;
   color: var(--c-primary);
+}
+
+/* Step cards (How it works) */
+.step-card {
+  position: relative;
+}
+
+.step-num {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--c-mid);
+  opacity: 0.6;
+}
+
+/* Optional: slightly tighter title spacing */
+.step-card h3 {
+  margin-top: 0.5rem;
 }
 
 /* =====================
@@ -637,11 +692,13 @@ textarea:focus {
   }
 }
 .about-actions {
+  margin-top: 1.25rem;
   display: flex;
+  flex-direction: column;
   gap: 0.75rem;
-  flex-wrap: wrap;
-  margin-top: 1rem;
+  align-items: flex-start;
 }
+
 /* =====================
    13) FAQ
 ===================== */
@@ -795,6 +852,10 @@ textarea:focus {
   margin-top: 1.25rem;
 }
 
+.footer-col ul + h4 {
+  margin-top: 1.5rem;
+}
+
 .footer-links {
   list-style: none;
   padding: 0;
@@ -871,54 +932,171 @@ textarea:focus {
 #scrollTopBtn:hover {
   background-color: var(--c-ink);
 }
-
 /* =====================
-   18) COMING SOON (temporary root)
+   18) New Additions
 ===================== */
-.coming-soon {
-  min-height: 100vh;
+
+/* =========================================================
+   UI/UX POLISH OVERRIDES (append-only)
+   Goal: consistency + responsive <=900px without breaking existing styles
+========================================================= */
+
+/* 1) Consistent vertical rhythm (reduce double-padding issues)
+   - Keep your per-section padding where defined (.hero, .services, etc.)
+   - Make the generic section padding smaller so it doesn't stack harshly
+*/
+section {
+  padding: 2.5rem 0;
+}
+
+@media (max-width: 900px) {
+  section {
+    padding: 2rem 0;
+  }
+}
+
+/* 2) Header nav: make it flex and remove margin-left spacing
+   (current nav a relies on margin-left, which breaks on wrap/mobile)
+*/
+header nav {
   display: flex;
   align-items: center;
-  background: var(--c-bg-soft);
+  flex-wrap: wrap;
+  gap: 0.9rem;
 }
 
-.coming-box {
-  max-width: 760px;
-  margin: 0 auto;
-  text-align: center;
-  padding: 4rem 1.5rem;
+header nav a {
+  margin-left: 0; /* overrides: nav a { margin-left: 1rem; } */
 }
 
-.coming-box h1 {
-  font-size: 2.4rem;
-  color: var(--c-primary);
-  margin-bottom: 0.75rem;
+@media (max-width: 768px) {
+  header nav {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  /* hide the "|" separator span in mobile for cleaner wrap */
+  header nav span {
+    display: none;
+  }
 }
 
-.coming-sub {
-  font-size: 1.1rem;
-  color: var(--c-ink);
-  margin-bottom: 2rem;
+/* 3) Hero: center CTA row on mobile */
+@media (max-width: 900px) {
+  .hero-actions {
+    justify-content: center;
+  }
 }
 
-.coming-divider {
-  border: none;
-  height: 1px;
-  background: rgba(90, 115, 142, 0.3);
-  margin: 2.5rem auto;
-  max-width: 320px;
+/* 4) Promo: stack card layout and buttons on mobile */
+@media (max-width: 900px) {
+  .promo-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .promo-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .promo-actions .btn {
+    width: 100%;
+    text-align: center;
+  }
 }
 
-.coming-brand {
-  margin-top: 2.5rem;
-  font-weight: 700;
-  color: var(--c-primary);
+/* 6) About: buttons should be row on desktop, stack on mobile
+   (this fixes your specific request about "View more" placement)
+*/
+.about-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
-.coming-brand span {
-  display: block;
-  margin-top: 0.25rem;
-  font-weight: 400;
-  font-style: italic;
-  color: var(--c-mid);
+@media (max-width: 900px) {
+  .about-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .about-actions .btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* 7) About points: keep alignment readable on mobile */
+@media (max-width: 900px) {
+  .about-points {
+    text-align: left;
+    display: block; /* remove inline-block "floating" feel */
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+/* 8) Contact form: ensure button aligns nicely and doesn't look cramped */
+.contact-form .btn {
+  width: 100%;
+}
+
+@media (min-width: 901px) {
+  .contact-form .btn {
+    width: auto;
+  }
+}
+
+/* About actions: stack buttons (View more above Get a Free Quote) */
+.about-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.about-actions .btn {
+  width: fit-content;
+}
+
+/* Optional: if you want both buttons same width for cleaner UI */
+@media (max-width: 900px) {
+  .about-actions {
+    align-items: stretch;
+  }
+  .about-actions .btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* =========================================
+   Mobile breathing space – Topbar & Header
+========================================= */
+
+@media (max-width: 900px) {
+  /* Topbar: más aire lateral y vertical */
+  .topbar {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .topbar .bar-inner {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  /* Header: separar visualmente del borde */
+  header {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .header-inner {
+    padding-top: 0.5rem;
+    padding-bottom: 0.75rem;
+  }
 }
