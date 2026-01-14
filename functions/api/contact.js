@@ -200,15 +200,7 @@ export async function onRequestPost(context) {
     }
 
     // ---- Resend ----
-       const timestamp = new Date().toLocaleString("sv-SE", {
-  timeZone: "America/New_York"
-}).replace("T", " ");
-
-
-    const subject =
-      locale.toLowerCase() === "es"
-         ? `${CONTACT_SUBJECT_PREFIX} Nueva solicitud (${timestamp})`
-    : `${CONTACT_SUBJECT_PREFIX} New website inquiry (${timestamp})`;
+    const subject = `${CONTACT_SUBJECT_PREFIX} Web Contact Form`;
 
     const safePhone = phone ? phone : "(not provided)";
     const safeLanguage = language ? language : "(not selected)";
