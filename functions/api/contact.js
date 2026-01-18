@@ -1,17 +1,27 @@
 // /functions/api/contact.js
 // Rate limit: 5 submissions per hour per IP (KV binding: RATE_LIMIT_KV)
 
+  const ALLOWED_ORIGINS = new Set([
+  "https://rbmentors.com",
+  "https://www.rbmentors.com",
+]);
+
 export async function onRequestPost(context) {
   const { request, env } = context;
 
   const reqId = crypto.randomUUID();
   const log = (...args) => console.log(`[contact ${reqId}]`, ...args);
 
-  const corsHeaders = {
-    "Access-Control-Allow-Origin": "*",
+const origin = request.headers.get("Origin");
+const allowOrigin =
+    !origin || ALLOWED_ORIGINS.has(origin) ? origin || "https://rbmentors.com" : "null";
+
+ const corsHeaders = {
+  "Access-Control-Allow-Origin": allowOrigin,
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
-  };
+    "Vary": "Origin",
+};
 
   try {
     if (request.method === "OPTIONS") {
