@@ -126,15 +126,12 @@ export async function onRequestPost(context) {
 
     // Turnstile token
     const turnstileToken = clamp(
-      (body["cf-turnstile-response"] || body.turnstileToken || "")
-        .toString()
-        .trim(),
+      (body["cf-turnstile-response"] || body.turnstileToken || "").toString().trim(),
       5000
     );
 
     // Honeypot (anti-spam)
     const honeypot = clamp((body.website || "").toString().trim(), 200);
-
 
     log("Incoming fields", {
       nameLen: name.length,
@@ -150,11 +147,7 @@ export async function onRequestPost(context) {
     // Require minimal fields (message is optional)
     if (!name || !email || !turnstileToken) {
       return json(
-        {
-          ok: false,
-          error: "Missing required fields (name, email, captcha).",
-          reqId,
-        },
+        { ok: false, error: "Missing required fields (name, email, captcha).", reqId },
         400,
         corsHeaders
       );
@@ -177,10 +170,10 @@ export async function onRequestPost(context) {
     tsForm.append("response", turnstileToken);
     if (ip && ip !== "unknown") tsForm.append("remoteip", ip);
 
-    const tsResp = await fetch(
-      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
-      { method: "POST", body: tsForm }
-    );
+    const tsResp = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+      method: "POST",
+      body: tsForm,
+    });
 
     const tsJson = await tsResp.json().catch(() => null);
     log("Turnstile response", { status: tsResp.status, body: tsJson });
@@ -199,8 +192,16 @@ export async function onRequestPost(context) {
       );
     }
 
-    // ---- Resend ----
-    const subject = `${CONTACT_SUBJECT_PREFIX} Web Contact Form`;
+    // ---- Email content (safe + timestamp in America/New_York) ----
+    const tsNY = formatNYTimestamp(new Date());
+    const lang = (language || "").toLowerCase().startsWith("es") ? "ES" : "EN";
+
+    const subjectRaw =
+      lang === "ES"
+        ? `${CONTACT_SUBJECT_PREFIX} Contacto Web | ${tsNY} ET | ${reqId}`
+        : `${CONTACT_SUBJECT_PREFIX} Web Contact | ${tsNY} ET | ${reqId}`;
+
+    const subject = safeSubject(subjectRaw);
 
     const safePhone = phone ? phone : "(not provided)";
     const safeLanguage = language ? language : "(not selected)";
@@ -213,23 +214,35 @@ export async function onRequestPost(context) {
       <p><strong>Phone:</strong> ${escapeHtml(safePhone)}</p>
       <p><strong>Preferred language:</strong> ${escapeHtml(safeLanguage)}</p>
       <p><strong>Message:</strong></p>
-      <pre style="white-space:pre-wrap;font-family:inherit;">${escapeHtml(
-        safeMessage
-      )}</pre>
+      <pre style="white-space:pre-wrap;font-family:inherit;">${escapeHtml(safeMessage)}</pre>
       <hr />
-      <p><small>Request ID: ${reqId}</small></p>
+      <p><small>Request ID: ${escapeHtml(reqId)}</small></p>
+      <p><small>Timestamp (America/New_York): ${escapeHtml(tsNY)} ET</small></p>
     `;
 
+    const text =
+      `New Contact Form Submission\n\n` +
+      `Name: ${name}\n` +
+      `Email: ${email}\n` +
+      `Phone: ${safePhone}\n` +
+      `Preferred language: ${safeLanguage}\n\n` +
+      `Message:\n${safeMessage}\n\n` +
+      `Request ID: ${reqId}\n` +
+      `Timestamp (America/New_York): ${tsNY} ET\n`;
+
     const resendPayload = {
-      from: RESEND_FROM,
-      to: CONTACT_TO.split(",").map((s) => s.trim()).filter(Boolean),
+      from: safeHeaderValue(RESEND_FROM, 254),
+      to: CONTACT_TO.split(",")
+        .map((s) => safeHeaderValue(s.trim(), 254))
+        .filter(Boolean),
       subject,
+      text,
       html,
-      reply_to: email,
+      reply_to: safeHeaderValue(email, 254),
     };
 
     log("Resend payload (safe)", {
-      from: RESEND_FROM,
+      from: resendPayload.from ? "(set)" : "(missing)",
       toCount: resendPayload.to.length,
       subject,
       hasReplyTo: !!resendPayload.reply_to,
@@ -303,4 +316,39 @@ function isValidEmail(email) {
   if (!v) return false;
   if (v.length > 254) return false;
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+}
+
+// ---- Safety helpers (prevent header injection / folding) ----
+function stripCRLF(str) {
+  return String(str || "").replace(/[\r\n]+/g, " ").trim();
+}
+
+function safeSubject(str, maxLen = 140) {
+  const oneLine = stripCRLF(str).replace(/\t+/g, " ");
+  const collapsed = oneLine.replace(/\s{2,}/g, " ").trim();
+  return collapsed.length > maxLen ? collapsed.slice(0, maxLen) : collapsed;
+}
+
+function safeHeaderValue(str, maxLen = 200) {
+  const v = stripCRLF(str);
+  return v.length > maxLen ? v.slice(0, maxLen) : v;
+}
+
+// ---- Timestamp (America/New_York) ----
+function formatNYTimestamp(date = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/New_York",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  }).formatToParts(date);
+
+  const get = (t) => parts.find((p) => p.type === t)?.value || "";
+  return `${get("year")}-${get("month")}-${get("day")} ${get("hour")}:${get("minute")}:${get(
+    "second"
+  )}`;
 }
