@@ -31,25 +31,25 @@ if (contactForm) {
   const text = {
     sending: isSpanish ? "Enviando..." : "Sending...",
     sent: isSpanish
-      ? "Listo. Recibí tu solicitud. Te responderé por email pronto."
+      ? "Listo. Recibí su solicitud. Le responderé por email pronto."
       : "Done. I received your request. I’ll reply by email soon.",
     error: isSpanish
-      ? "No se pudo enviar. Intenta de nuevo en unos minutos."
+      ? "No se pudo enviar. Intente de nuevo en unos minutos."
       : "Could not send. Please try again in a few minutes.",
     network: isSpanish
-      ? "Error de red. Revisa tu conexión e intenta de nuevo."
+      ? "Error de red. Revise su conexión e intente de nuevo."
       : "Network error. Check your connection and try again.",
     timeout: isSpanish
-      ? "La solicitud tardó demasiado. Intenta de nuevo."
+      ? "La solicitud tardó demasiado. Intente de nuevo."
       : "Request timed out. Please try again.",
     rateLimit: isSpanish
-      ? "Demasiados intentos. Espera una hora e inténtalo de nuevo."
+      ? "Demasiados intentos. Espere una hora e inténtale de nuevo."
       : "Too many attempts. Please wait an hour and try again.",
     turnstile: isSpanish
-      ? "Verifica el captcha y vuelve a intentar."
+      ? "Verifique el captcha y vuelva a intentar."
       : "Please complete the captcha and try again.",
     invalid: isSpanish
-      ? "Revisa los campos requeridos (nombre y email)."
+      ? "Revise los campos requeridos (nombre y email)."
       : "Please check required fields (name and email).",
     invalidEmail: isSpanish
       ? "El email no parece válido."
