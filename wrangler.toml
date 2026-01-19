@@ -1,0 +1,7 @@
+name = "rbmentors"
+compatibility_date = "2025-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "rbm_db"
+database_id =  "06545c9a-a1f1-4db9-84e3-bb4ac27af90e"
